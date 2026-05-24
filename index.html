@@ -826,6 +826,9 @@
                 statusEl.className = "text-[10px] mt-1.5 font-bold text-green-600";
                 statusEl.textContent = "🌸 個人用のAPIキーが設定されています。";
             } else {
+                if (DEFAULT_API_KEY) {
+                    document.getElementById('gemini-api-key').value = DEFAULT_API_KEY;
+                }
                 statusEl.className = "text-[10px] mt-1.5 font-bold text-blue-600";
                 statusEl.textContent = "🔑 お父様共有のデフォルトAPIキー（お父様認証）が有効です。";
             }
@@ -1043,7 +1046,7 @@
                 count = 10; 
             }
 
-            const apiKey = localStorage.getItem('keio_gemini_api_key');
+            const apiKey = getActiveApiKey();
 
             if (settingsPlayMode === 'ai' && apiKey) {
                 // ================= API自動生成出題モード =================
