@@ -295,6 +295,28 @@
                 </div>
             </div>
 
+            <!-- 出題モード選択エリア -->
+            <div id="play-mode-container" class="border-t pt-5 mb-5">
+                <div class="bg-blue-50 p-4 rounded-xl border border-blue-200">
+                    <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                        <div class="flex-grow">
+                            <label class="block text-xs font-black text-keio-blue uppercase tracking-wider mb-1">⚡ 出題モードの選択</label>
+                            <p id="mode-help-text" class="text-[10px] text-gray-500 font-medium">
+                                ※ データベースに収録されている厳選された238問から、選んだカテゴリに沿ってランダムに出題します。
+                            </p>
+                        </div>
+                        <div class="grid grid-cols-2 gap-2 w-full md:w-auto">
+                            <button id="btn-mode-offline" onclick="setPlayMode('offline')" class="py-2 px-4 rounded-lg border font-bold text-xs bg-keio-blue text-white shadow-sm focus:outline-none transition active:scale-95">
+                                📦 データベースから出題
+                            </button>
+                            <button id="btn-mode-ai" onclick="setPlayMode('ai')" class="py-2 px-4 rounded-lg border font-bold text-xs bg-white text-gray-700 hover:bg-gray-50 focus:outline-none transition active:scale-95">
+                                ✨ AIリアルタイム生成
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <!-- アクション・オプションエリア -->
             <div class="border-t pt-5 flex flex-col md:flex-row justify-between items-center gap-4">
                 <div class="flex items-center space-x-2">
@@ -491,6 +513,25 @@
                 </button>
             </div>
         </section>
+
+        <!-- ================= パスワード認証モーダル ================= -->
+        <div id="modal-auth" class="fixed inset-0 bg-gray-900 bg-opacity-70 flex items-center justify-center z-50 hidden backdrop-filter backdrop-blur-sm">
+            <div class="bg-white rounded-2xl shadow-2xl p-6 max-w-sm w-full mx-4 border-t-4 border-keio-red transform transition scale-95 duration-300">
+                <div class="text-center mb-4">
+                    <span class="text-lg">🔐</span>
+                    <h3 class="text-lg font-black text-gray-800 mt-2">AIモードの保護認証</h3>
+                    <p class="text-xs text-gray-500 mt-1">意図しないAPI利用を防ぐためのセキュリティ保護です。お父様に共有されたパスワードを入力してください。</p>
+                </div>
+                <div class="mb-4">
+                    <input type="password" id="auth-password" class="w-full text-center text-lg p-2.5 border rounded-lg focus:outline-none focus:ring-2 focus:ring-keio-red" placeholder="パスワードを入力..." onkeydown="if(event.key === 'Enter') verifyAuthPassword()" />
+                    <p id="auth-error-msg" class="text-[10px] text-red-500 font-bold mt-1.5 text-center hidden">⚠ パスワードが一致しません！</p>
+                </div>
+                <div class="flex space-x-2">
+                    <button onclick="closeAuthModal()" class="flex-1 bg-gray-200 text-gray-600 font-bold py-2.5 rounded-lg text-xs hover:bg-gray-300 transition focus:outline-none">キャンセル</button>
+                    <button onclick="verifyAuthPassword()" class="flex-1 bg-keio-red text-white font-bold py-2.5 rounded-lg text-xs hover:bg-opacity-90 transition shadow focus:outline-none">認証する</button>
+                </div>
+            </div>
+        </div>
 
     </main>
 
@@ -7674,6 +7715,12 @@
         let userAnswers = [];
         // 設定用：出題問題数（数値または'all'）
         let settingsQuestionNum = 5;
+        // 設定用：出題モード（'offline' または 'ai'）
+        let settingsPlayMode = 'offline';
+        // デフォルトの共有APIキー
+        const DEFAULT_API_KEY = "AIzaSyAIxD7aHNlqbrlTHyr_2oGWtESQl6PqWqg";
+        // 認証用コールバック
+        let onAuthSuccessCallback = null;
 
         // ドメイン別のトグル状態
         let domainToggleState = {
@@ -7732,16 +7779,26 @@
                 }
             }
 
+            // 出題モードの復元・初期化
+            let savedMode = localStorage.getItem('keio_play_mode');
+            if (savedMode) {
+                settingsPlayMode = savedMode;
+            } else {
+                const hasKey = !!localStorage.getItem('keio_gemini_api_key');
+                settingsPlayMode = hasKey ? 'ai' : 'offline';
+            }
+            updatePlayModeUI();
+
             // APIキーの読み込み表示
             const savedKey = localStorage.getItem('keio_gemini_api_key');
             const statusEl = document.getElementById('api-key-status');
             if (savedKey) {
                 document.getElementById('gemini-api-key').value = savedKey;
                 statusEl.className = "text-[10px] mt-1.5 font-bold text-green-600";
-                statusEl.textContent = "🌸 APIキー保存済み。全自動AI出題モードで動作中！";
+                statusEl.textContent = "🌸 個人用のAPIキーが設定されています。";
             } else {
-                statusEl.className = "text-[10px] mt-1.5 font-bold text-gray-500";
-                statusEl.textContent = "🔑 APIキーを設定すると、毎回ボタン一つで最新クイズを自動生成して出題できます。";
+                statusEl.className = "text-[10px] mt-1.5 font-bold text-blue-600";
+                statusEl.textContent = "🔑 お父様共有のデフォルトAPIキー（0525認証）が有効です。";
             }
 
             // プレイ開始時の初期化
@@ -7751,9 +7808,97 @@
         function updateBadgeUI() {
             const badge = document.getElementById('header-badge');
             if (badge && totalStats.bestRank) {
-                const apiKey = localStorage.getItem('keio_gemini_api_key');
-                const apiModeText = apiKey ? " 🔥 AI自動連動" : " 💤 オフライン";
+                const apiModeText = settingsPlayMode === 'ai' ? " 🔥 AI自動連動" : " 💤 データベース出題";
                 badge.textContent = `${totalStats.bestRank}${apiModeText}`;
+            }
+        }
+
+        // 有効なAPIキーを取得するヘルパー
+        function getActiveApiKey() {
+            const savedKey = localStorage.getItem('keio_gemini_api_key');
+            return savedKey || DEFAULT_API_KEY;
+        }
+
+        // 出題モードの設定
+        function setPlayMode(mode) {
+            if (mode === 'ai') {
+                const apiKey = getActiveApiKey();
+                if (!apiKey) {
+                    alert('AIリアルタイム生成モードを利用するには、下部アコーディオンメニューの「💡 [お父様用] 最新時事・無限クイズ追加ジェネレーター」から「Gemini APIキー」を設定して保存してください。');
+                    // APIキーの入力欄にスクロールして注目させる
+                    const aiSection = document.getElementById('ai-generator-section');
+                    if (aiSection.classList.contains('hidden')) {
+                        toggleAISection();
+                    }
+                    document.getElementById('gemini-api-key').focus();
+                    document.getElementById('gemini-api-key').scrollIntoView({ behavior: 'smooth' });
+                    return;
+                }
+            }
+            settingsPlayMode = mode;
+            localStorage.setItem('keio_play_mode', mode);
+            updatePlayModeUI();
+        }
+
+        function updatePlayModeUI() {
+            const btnOffline = document.getElementById('btn-mode-offline');
+            const btnAI = document.getElementById('btn-mode-ai');
+            const helpText = document.getElementById('mode-help-text');
+            
+            if (!btnOffline || !btnAI || !helpText) return;
+            
+            if (settingsPlayMode === 'ai') {
+                btnOffline.className = "py-2 px-4 rounded-lg border font-bold text-xs bg-white text-gray-700 hover:bg-gray-50 focus:outline-none transition active:scale-95";
+                btnAI.className = "py-2 px-4 rounded-lg border font-bold text-xs bg-keio-blue text-white shadow-sm focus:outline-none transition active:scale-95";
+                
+                const hasPersonalKey = !!localStorage.getItem('keio_gemini_api_key');
+                if (hasPersonalKey) {
+                    helpText.textContent = "✨ 個人用のAPIキーを使用して、毎回リアルタイムに完全新規クイズをAI自動生成して出題します！";
+                } else {
+                    helpText.textContent = "✨ お父様共有のデフォルトAPIキー（0525認証）を使用し、毎回リアルタイムにクイズをAI自動生成して出題します！";
+                }
+            } else {
+                btnOffline.className = "py-2 px-4 rounded-lg border font-bold text-xs bg-keio-blue text-white shadow-sm focus:outline-none transition active:scale-95";
+                btnAI.className = "py-2 px-4 rounded-lg border font-bold text-xs bg-white text-gray-700 hover:bg-gray-50 focus:outline-none transition active:scale-95";
+                helpText.textContent = "📦 データベースに収録されている厳選された238問から、選んだカテゴリに沿ってランダムに出題します（通信不要）。";
+            }
+            
+            updateBadgeUI();
+        }
+
+        // パスワード認証モーダルの制御
+        function openAuthModal(onSuccess) {
+            onAuthSuccessCallback = onSuccess;
+            document.getElementById('modal-auth').classList.remove('hidden');
+            document.getElementById('auth-password').value = '';
+            document.getElementById('auth-error-msg').classList.add('hidden');
+            setTimeout(() => {
+                document.getElementById('auth-password').focus();
+            }, 100);
+        }
+
+        function closeAuthModal() {
+            document.getElementById('modal-auth').classList.add('hidden');
+            onAuthSuccessCallback = null;
+        }
+
+        function verifyAuthPassword() {
+            const pwInput = document.getElementById('auth-password').value.trim();
+            const errorMsg = document.getElementById('auth-error-msg');
+            if (pwInput === "0525") {
+                sessionStorage.setItem('keio_ai_authenticated', 'true');
+                closeAuthModal();
+                if (onAuthSuccessCallback) {
+                    onAuthSuccessCallback();
+                }
+            } else {
+                errorMsg.classList.remove('hidden');
+                // 間違った場合にモーダルをブルブルとシェイクさせる
+                const modalBox = document.querySelector('#modal-auth > div');
+                modalBox.classList.add('animate-shake');
+                setTimeout(() => {
+                    modalBox.classList.remove('animate-shake');
+                }, 500);
             }
         }
 
@@ -7826,7 +7971,7 @@
             localStorage.setItem('keio_gemini_api_key', keyInput);
             statusEl.className = "text-[10px] mt-1.5 font-bold text-green-600";
             statusEl.textContent = "🌸 APIキーが正常に保存されました！全自動AI出題モードが有効です。";
-            updateBadgeUI();
+            setPlayMode('ai'); // AI生成モードに自動移行
         }
 
         function clearApiKey() {
@@ -7835,7 +7980,7 @@
             const statusEl = document.getElementById('api-key-status');
             statusEl.className = "text-[10px] mt-1.5 font-bold text-gray-500";
             statusEl.textContent = "🔑 APIキーを消去しました。オフラインモードで動作します。";
-            updateBadgeUI();
+            setPlayMode('offline'); // データベース出題モードに自動移行
         }
 
         // --- クイズエンジンコア ---
@@ -7861,7 +8006,7 @@
 
             const apiKey = localStorage.getItem('keio_gemini_api_key');
 
-            if (apiKey) {
+            if (settingsPlayMode === 'ai' && apiKey) {
                 // ================= API自動生成出題モード =================
                 const loadingScreen = document.getElementById('screen-loading');
                 loadingScreen.classList.remove('hidden');
