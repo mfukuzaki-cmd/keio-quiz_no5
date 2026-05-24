@@ -436,14 +436,16 @@
                     
                     <!-- Gemini API 直接自動連携エリア -->
                     <div class="mb-4 pb-4 border-b border-gray-200">
-                        <label class="block text-xs font-bold text-gray-700 mb-1.5 flex items-center justify-between">
+                        <label class="block text-xs font-bold text-gray-700 mb-1.5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1">
                             <span>🔑 Gemini APIキー（設定すると毎回ボタン一つで自動生成します）</span>
-                            <a href="https://aistudio.google.com/" target="_blank" class="text-keio-blue hover:underline font-bold text-[10px]">無料キーを取得 ↗</a>
+                            <a href="https://aistudio.google.com/" target="_blank" class="text-keio-blue hover:underline font-bold text-[10px] w-fit">無料キーを取得 ↗</a>
                         </label>
-                        <div class="flex space-x-2">
-                            <input type="password" id="gemini-api-key" class="flex-grow text-xs p-2 border rounded focus:outline-none focus:ring-1 focus:ring-keio-blue" placeholder="AI StudioのAPIキーを入力..." />
-                            <button onclick="saveApiKey()" class="bg-keio-blue text-white text-xs font-bold px-3 py-2 rounded hover:bg-opacity-90 transition focus:outline-none active:scale-95">保存</button>
-                            <button onclick="clearApiKey()" class="bg-gray-200 text-gray-600 text-xs font-bold px-3 py-2 rounded border hover:bg-gray-100 transition focus:outline-none active:scale-95">消去</button>
+                        <div class="flex flex-col sm:flex-row gap-2">
+                            <input type="password" id="gemini-api-key" class="w-full sm:flex-grow text-xs p-2.5 border rounded focus:outline-none focus:ring-1 focus:ring-keio-blue" placeholder="AI StudioのAPIキーを入力..." />
+                            <div class="flex space-x-2 w-full sm:w-auto">
+                                <button onclick="saveApiKey()" class="flex-grow sm:flex-initial bg-keio-blue text-white text-xs font-bold px-4 py-2.5 rounded hover:bg-opacity-90 transition focus:outline-none active:scale-95">保存</button>
+                                <button onclick="clearApiKey()" class="flex-grow sm:flex-initial bg-gray-200 text-gray-600 text-xs font-bold px-4 py-2.5 rounded border hover:bg-gray-100 transition focus:outline-none active:scale-95">消去</button>
+                            </div>
                         </div>
                         <div id="api-key-status" class="text-[10px] mt-1.5 font-bold"></div>
                     </div>
