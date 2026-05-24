@@ -17,11 +17,16 @@
             font-family: 'Outfit', 'Noto Sans JP', sans-serif;
         }
 
+        html, body {
+            overflow-x: hidden;
+            width: 100%;
+            max-width: 100%;
+        }
+
         body {
             font-family: 'Noto Sans JP', sans-serif;
             background: linear-gradient(135deg, #f4f6fb 0%, #e7ecf5 100%);
             position: relative;
-            overflow-x: hidden;
         }
 
         /* 幻想的なソフトグラデーション球（背景装飾用） */
@@ -197,6 +202,14 @@
             100% {
                 transform: translateY(105vh) rotate(720deg) translateX(-15px);
                 opacity: 0;
+            }
+        }
+
+        /* iOSでの入力時自動ズーム対策（フォントサイズ16px未満のフォームへのフォーカス時にズームする仕様を回避） */
+        @media (max-width: 640px) {
+            input[type="password"],
+            textarea {
+                font-size: 16px !important;
             }
         }
     </style>
@@ -428,7 +441,7 @@
             <div class="mt-6 border-t pt-4">
                 <button onclick="toggleAISection()" class="w-full flex items-center justify-between text-sm font-bold text-gray-600 bg-gray-50 hover:bg-gray-100 p-3 rounded-lg focus:outline-none">
                     <span class="flex items-center">
-                        💡 <strong>[お父様用] 最新時事・無限クイズ追加ジェネレーター</strong>
+                        💡 <strong>[パパ用] 最新時事・無限クイズ追加ジェネレーター</strong>
                     </span>
                     <span id="ai-toggle-icon">▼</span>
                 </button>
@@ -441,7 +454,7 @@
                             <a href="https://aistudio.google.com/" target="_blank" class="text-keio-blue hover:underline font-bold text-[10px] w-fit">無料キーを取得 ↗</a>
                         </label>
                         <div class="flex flex-col sm:flex-row gap-2">
-                            <input type="password" id="gemini-api-key" class="w-full sm:flex-grow text-xs p-2.5 border rounded focus:outline-none focus:ring-1 focus:ring-keio-blue" placeholder="AI StudioのAPIキーを入力..." />
+                            <input type="password" id="gemini-api-key" class="w-full sm:flex-grow text-base sm:text-xs p-2.5 border rounded focus:outline-none focus:ring-1 focus:ring-keio-blue" placeholder="AI StudioのAPIキーを入力..." />
                             <div class="flex space-x-2 w-full sm:w-auto">
                                 <button onclick="saveApiKey()" class="flex-grow sm:flex-initial bg-keio-blue text-white text-xs font-bold px-4 py-2.5 rounded hover:bg-opacity-90 transition focus:outline-none active:scale-95">保存</button>
                                 <button onclick="clearApiKey()" class="flex-grow sm:flex-initial bg-gray-200 text-gray-600 text-xs font-bold px-4 py-2.5 rounded border hover:bg-gray-100 transition focus:outline-none active:scale-95">消去</button>
@@ -461,7 +474,7 @@
                     </div>
                     <div class="mb-4">
                         <label class="block text-xs font-bold text-gray-700 mb-1">2. AIが返したデータを下の枠に貼り付け、[データを読み込む] を押します：</label>
-                        <textarea id="ai-import-area" rows="4" class="w-full text-xs p-2 border rounded focus:outline-none focus:ring-1 focus:ring-keio-blue" placeholder='ここにAIが出力したJSONをそのまま貼り付けてください...'></textarea>
+                        <textarea id="ai-import-area" rows="4" class="w-full text-base sm:text-xs p-2 border rounded focus:outline-none focus:ring-1 focus:ring-keio-blue" placeholder='ここにAIが出力したJSONをそのまま貼り付けてください...'></textarea>
                     </div>
                     <button onclick="importQuizData()" class="w-full bg-keio-gold text-keio-blue font-bold text-xs py-2 rounded-lg hover:brightness-95 transition focus:outline-none active:scale-95">
                         📥 データをアプリに読み込んで更新する
@@ -608,7 +621,7 @@
                 <div class="text-center mb-4">
                     <span class="text-lg">🔐</span>
                     <h3 class="text-lg font-black text-gray-800 mt-2">AIモードの保護認証</h3>
-                    <p class="text-xs text-gray-500 mt-1">意図しないAPI利用を防ぐためのセキュリティ保護です。お父様に共有されたパスワードを入力してください。</p>
+                    <p class="text-xs text-gray-500 mt-1">意図しないAPI利用を防ぐためのセキュリティ保護です。パスワードを入力してください。里香の誕生日だよ。</p>
                 </div>
                 <div class="mb-4">
                     <input type="password" id="auth-password" class="w-full text-center text-lg p-2.5 border rounded-lg focus:outline-none focus:ring-2 focus:ring-keio-red" placeholder="パスワードを入力..." onkeydown="if(event.key === 'Enter') verifyAuthPassword()" />
@@ -831,10 +844,10 @@
                 if (DEFAULT_API_KEY) {
                     document.getElementById('gemini-api-key').value = DEFAULT_API_KEY;
                     statusEl.className = "text-[10px] mt-1.5 font-bold text-blue-600";
-                    statusEl.textContent = "🔑 お父様共有のデフォルトAPIキー（お父様認証）が有効です。";
+                    statusEl.textContent = "🔑 GeminiデフォルトAPIキー（パパ認証）が有効です。";
                 } else {
                     statusEl.className = "text-[10px] mt-1.5 font-bold text-gray-500";
-                    statusEl.textContent = "🔑 APIキーが設定されていません。AIモードを使用するには下からご入力ください。";
+                    statusEl.textContent = "🔑 APIキーが設定されていません。AIモードを使用するにはGemini APIキーを入力してください。";
                 }
             }
 
@@ -861,7 +874,7 @@
             if (mode === 'ai') {
                 const apiKey = getActiveApiKey();
                 if (!apiKey) {
-                    alert('AIリアルタイム生成モードを利用するには、下部アコーディオンメニューの「💡 [お父様用] 最新時事・無限クイズ追加ジェネレーター」から「Gemini APIキー」を設定して保存してください。');
+                    alert('AIリアルタイム生成モードを利用するには、下部アコーディオンメニューの「💡 [パパ用] 最新時事・無限クイズ追加ジェネレーター」から「Gemini APIキー」を設定して保存してください。');
                     // APIキーの入力欄にスクロールして注目させる
                     const aiSection = document.getElementById('ai-generator-section');
                     if (aiSection.classList.contains('hidden')) {
@@ -892,7 +905,7 @@
                 if (hasPersonalKey) {
                     helpText.textContent = "✨ 個人用のAPIキーを使用して、毎回リアルタイムに完全新規クイズをAI自動生成して出題します！";
                 } else {
-                    helpText.textContent = "✨ お父様共有のデフォルトAPIキー（お父様認証）を使用し、毎回リアルタイムにクイズをAI自動生成して出題します！";
+                    helpText.textContent = "✨ デフォルトAPIキー（パパ認証）を使用し、毎回リアルタイムにクイズをAI自動生成して出題します！";
                 }
             } else {
                 btnOffline.className = "py-2 px-4 rounded-lg border font-bold text-xs bg-keio-blue text-white shadow-sm focus:outline-none transition active:scale-95";
@@ -1663,7 +1676,7 @@
         }
 
         function resetDatabase() {
-            if (confirm("学習成績および追加したクイズ問題データをすべて消去し、\n初期の10問のデータに戻しますか？\nこの操作は取り消せません。")) {
+            if (confirm("これまでの学習成績および【後から追加・自動生成したクイズ問題】をすべて消去し、初期状態にリセットしますか？\n（※外部データベースに収録されている基本の238問は消去されず、引き続きプレイ可能です）\nこの操作は取り消せません。")) {
                 localStorage.removeItem('keio_quiz_stats');
                 localStorage.setItem('keio_quiz_db', JSON.stringify(defaultQuizDB));
                 totalStats = {
