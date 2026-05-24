@@ -639,14 +639,14 @@
             "category": "1-1. 天体・自然と暦のシステム",
             "question": "明治時代に日本が採用し、現在も使われている太陽の動きを基準とした暦を何と呼びますか。",
             "options": [
-              "グレゴリオ暦（太陽暦）",
               "太陰太陽暦",
+              "グレゴリオ暦（太陽暦）",
               "天保暦",
               "ユリウス暦"
             ],
-            "answerIndex": 0,
+            "answerIndex": 1,
             "hint": "1年を365日とし、4年に1回うるう年を設ける世界標準の暦です。",
-            "rationale": "明治5年12月3日、日本はそれまでの「旧暦」を廃止し、世界基準である「太陽暦（グレゴリオ暦）」に切り替えました。この時、12月3日が急に「明治6年1月1日」になったため当時の社会は大混乱しました。",
+            "rationale": "明治5年12月3日, 日本はそれまでの「旧暦」を廃止し、世界基準である「太陽暦（グレゴリオ暦）」に切り替えました。この時、12月3日が急に「明治6年1月1日」になったため当時の社会は大混乱しました。",
             "parentTalk": "「もし明日から急にカレンダーが1ヶ月ずれますって言われたらどうする？」とお父さんと当時の混乱を想像してみよう！"
           },
           {
@@ -654,12 +654,12 @@
             "category": "2-1. 和食の伝統と発酵の科学",
             "question": "料理のさしすせそにおいて、4番目の「せ」が表す調味料はどれですか。",
             "options": [
-              "醤油（しょうゆ）",
               "砂糖（さとう）",
               "塩（しお）",
-              "お酢（おす）"
+              "お酢（おす）",
+              "醤油（しょうゆ）"
             ],
-            "answerIndex": 0,
+            "answerIndex": 3,
             "hint": "歴史的仮名遣いでの古い書き方がヒントになっています。",
             "rationale": "昔は醤油のことを「せうゆ」と表記していたため、「せ」は醤油を指します。",
             "parentTalk": "「お醤油のほかにも、昔の言葉遣いがそのまま残っている料理の名前をお父さんと探してみよう！」"
@@ -669,12 +669,12 @@
             "category": "3-1. 公共インフラと通信・交通",
             "question": "日本の道路を走る自動車が「左側通行」になった歴史について、江戸時代の武士の歩き方に由来すると言われていますが、その理由は何ですか。",
             "options": [
-              "武士が左腰に差した「刀（かたな）」のサヤ同士が、すれ違う時にぶつかってケンカになるのを防ぐため",
               "利き腕である右手をいつでも使って、すれ違いざまに挨拶するため",
+              "武士が左腰に差した「刀（かたな）」のサヤ同士が、すれ違う時にぶつかってケンカになるのを防ぐため",
               "江戸幕府が左利きの大名をいじめるために制定した嫌がらせの法律だから",
               "右側を歩くと、富士山が綺麗に見えなくなってしまうという迷信があったから"
             ],
-            "answerIndex": 0,
+            "answerIndex": 1,
             "hint": "武士にとって刀のサヤがぶつかることは、命に関わる無礼（サヤ当て）とされ、大ケンカの引き金になりました。",
             "rationale": "江戸時代、日本の道（特に武家社会）では、左腰に刀を差した武士たちがすれ違う際、刀のサヤ同士が触れ合って争いになるのを防ぐために「左側を歩く」という暗黙のルールがありました。これが明治・大正期に警察規則として正式に引き継がれ、現在の自動車の左側通行の土台となりました。",
             "parentTalk": "「武士の刀のマナーが、今の車のルールに繋がっているなんてびっくりだね」とお父さんと道路を眺めてみよう！"
@@ -827,7 +827,7 @@
                 statusEl.textContent = "🌸 個人用のAPIキーが設定されています。";
             } else {
                 statusEl.className = "text-[10px] mt-1.5 font-bold text-blue-600";
-                statusEl.textContent = "🔑 お父様共有のデフォルトAPIキー（0525認証）が有効です。";
+                statusEl.textContent = "🔑 お父様共有のデフォルトAPIキー（お父様認証）が有効です。";
             }
 
             // プレイ開始時の初期化
@@ -884,7 +884,7 @@
                 if (hasPersonalKey) {
                     helpText.textContent = "✨ 個人用のAPIキーを使用して、毎回リアルタイムに完全新規クイズをAI自動生成して出題します！";
                 } else {
-                    helpText.textContent = "✨ お父様共有のデフォルトAPIキー（0525認証）を使用し、毎回リアルタイムにクイズをAI自動生成して出題します！";
+                    helpText.textContent = "✨ お父様共有のデフォルトAPIキー（お父様認証）を使用し、毎回リアルタイムにクイズをAI自動生成して出題します！";
                 }
             } else {
                 btnOffline.className = "py-2 px-4 rounded-lg border font-bold text-xs bg-keio-blue text-white shadow-sm focus:outline-none transition active:scale-95";
@@ -914,7 +914,7 @@
         function verifyAuthPassword() {
             const pwInput = document.getElementById('auth-password').value.trim();
             const errorMsg = document.getElementById('auth-error-msg');
-            if (pwInput === "0525") {
+            if (btoa(pwInput) === "MDUyNQ==") {
                 sessionStorage.setItem('keio_ai_authenticated', 'true');
                 closeAuthModal();
                 if (onAuthSuccessCallback) {
@@ -1016,6 +1016,16 @@
 
         // スタート！
         async function startQuiz() {
+            // 生成AI出題モードかつ未認証の場合、初回にパスコード認証を要求する
+            if (settingsPlayMode === 'ai') {
+                const isAuthenticated = sessionStorage.getItem('keio_ai_authenticated') === 'true';
+                if (!isAuthenticated) {
+                    openAuthModal(() => {
+                        startQuiz(); // 認証成功後に再帰的に開始
+                    });
+                    return;
+                }
+            }
             // 選択されたエリアのリストを取得
             const checkedBoxes = document.querySelectorAll('.area-checkbox:checked');
             if (checkedBoxes.length === 0) {
