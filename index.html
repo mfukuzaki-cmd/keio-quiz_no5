@@ -746,8 +746,8 @@
         let settingsQuestionNum = 5;
         // 設定用：出題モード（'offline' または 'ai'）
         let settingsPlayMode = 'offline';
-        // デフォルトの共有APIキー
-        const DEFAULT_API_KEY = "AIzaSyAIxD7aHNlqbrlTHyr_2oGWtESQl6PqWqg";
+        // デフォルトの共有APIキー（セキュリティ保護のため空にしています。画面上からご入力ください）
+        const DEFAULT_API_KEY = "";
         // 認証用コールバック
         let onAuthSuccessCallback = null;
 
@@ -828,9 +828,12 @@
             } else {
                 if (DEFAULT_API_KEY) {
                     document.getElementById('gemini-api-key').value = DEFAULT_API_KEY;
+                    statusEl.className = "text-[10px] mt-1.5 font-bold text-blue-600";
+                    statusEl.textContent = "🔑 お父様共有のデフォルトAPIキー（お父様認証）が有効です。";
+                } else {
+                    statusEl.className = "text-[10px] mt-1.5 font-bold text-gray-500";
+                    statusEl.textContent = "🔑 APIキーが設定されていません。AIモードを使用するには下からご入力ください。";
                 }
-                statusEl.className = "text-[10px] mt-1.5 font-bold text-blue-600";
-                statusEl.textContent = "🔑 お父様共有のデフォルトAPIキー（お父様認証）が有効です。";
             }
 
             // プレイ開始時の初期化
