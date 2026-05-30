@@ -215,6 +215,10 @@
                 font-size: 16px !important;
             }
         }
+
+        /* Tailwind v2 CDNでのemeraldカラー欠落対策 */
+        .bg-emerald-500 { background-color: #10b981 !important; }
+        .border-emerald-600 { border-color: #059669 !important; }
     </style>
 </head>
 <body class="min-h-screen flex flex-col">
@@ -241,8 +245,8 @@
                 Gemini AIに接続しています...
             </div>
             
-            <!-- 滑らかなプログレスバー -->
-            <div class="w-full bg-gray-100 border border-gray-200 h-3 rounded-full overflow-hidden mb-4 shadow-inner">
+            <!-- 滑らかなプログレスバー（一部環境で動作しないため非表示にし、テキストとスピナーで進行表現） -->
+            <div class="hidden w-full bg-gray-100 border border-gray-200 h-3 rounded-full overflow-hidden mb-4 shadow-inner">
                 <div id="loading-progress-bar" class="bg-gradient-to-r from-keio-gold to-yellow-500 h-full" style="width: 0%; transition: width 0.3s ease-out;"></div>
             </div>
 
