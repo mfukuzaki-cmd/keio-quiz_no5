@@ -17,8 +17,7 @@
             font-family: 'Outfit', 'Noto Sans JP', sans-serif;
         }
 
-        html, body {
-            overflow-x: hidden;
+        html {
             width: 100%;
             max-width: 100%;
         }
@@ -27,12 +26,16 @@
             font-family: 'Noto Sans JP', sans-serif;
             background: linear-gradient(135deg, #f4f6fb 0%, #e7ecf5 100%);
             position: relative;
+            width: 100%;
+            max-width: 100%;
+            overflow-x: hidden;
+            -webkit-overflow-scrolling: touch; /* iOSでのスクロールを滑らかにする */
         }
 
         /* 幻想的なソフトグラデーション球（背景装飾用） */
         body::before, body::after {
             content: "";
-            position: absolute;
+            position: fixed; /* absoluteからfixedに変更し、スクロール干渉を排除 */
             width: 45vw;
             height: 45vw;
             border-radius: 50%;
