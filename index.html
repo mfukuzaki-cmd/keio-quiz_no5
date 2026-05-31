@@ -415,8 +415,37 @@
                             <span>4-3. 国際連帯とオリンピック</span>
                         </label>
                         <label class="flex items-center space-x-2 p-2 bg-white rounded cursor-pointer hover:bg-gray-50 transition border hover:border-red-200">
-                            <input type="checkbox" checked data-domain="domain4" value="4-4. 日本の言葉と慶應義塾のDNA" class="area-checkbox form-checkbox h-4 w-4 text-keio-red rounded">
-                            <span>4-4. 言葉・慣用句と慶應DNA</span>
+                            <input type="checkbox" checked data-domain="domain4" value="4-4. 日本の言葉と伝統文化" class="area-checkbox form-checkbox h-4 w-4 text-keio-red rounded">
+                            <span>4-4. 日本の言葉と伝統文化</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Domain 5 (慶應義塾のDNA - プレミアムゴールド) -->
+                <div class="col-span-1 md:col-span-2 border rounded-xl p-4 bg-gradient-to-r from-amber-50 to-red-50 border-amber-200 shadow-sm">
+                    <div class="flex items-center justify-between mb-2">
+                        <h3 class="font-bold text-amber-800 flex items-center">
+                            <span class="w-2.5 h-2.5 rounded-full bg-amber-600 mr-2 shadow-sm animate-pulse"></span>
+                            D5. 福沢諭吉と慶應義塾のDNA
+                        </h3>
+                        <button onclick="toggleDomain('domain5')" id="btn-dom-5" class="text-xs bg-white border px-2 py-1 rounded shadow-sm hover:bg-gray-50 transition active:scale-95 focus:outline-none">selectALL</button>
+                    </div>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-sm">
+                        <label class="flex items-center space-x-2 p-2 bg-white rounded cursor-pointer hover:bg-gray-50 transition border hover:border-amber-200">
+                            <input type="checkbox" checked data-domain="domain5" value="5-1. 諭吉の生涯" class="area-checkbox form-checkbox h-4 w-4 text-amber-600 rounded">
+                            <span>5-1. 福澤諭吉の生涯と旅</span>
+                        </label>
+                        <label class="flex items-center space-x-2 p-2 bg-white rounded cursor-pointer hover:bg-gray-50 transition border hover:border-amber-200">
+                            <input type="checkbox" checked data-domain="domain5" value="5-2. 諭吉の著作" class="area-checkbox form-checkbox h-4 w-4 text-amber-600 rounded">
+                            <span>5-2. 『学問のすすめ』と著作群</span>
+                        </label>
+                        <label class="flex items-center space-x-2 p-2 bg-white rounded cursor-pointer hover:bg-gray-50 transition border hover:border-amber-200">
+                            <input type="checkbox" checked data-domain="domain5" value="5-3. 諭吉と関連" class="area-checkbox form-checkbox h-4 w-4 text-amber-600 rounded">
+                            <span>5-3. 諭吉を取り巻く近代偉人</span>
+                        </label>
+                        <label class="flex items-center space-x-2 p-2 bg-white rounded cursor-pointer hover:bg-gray-50 transition border hover:border-amber-200">
+                            <input type="checkbox" checked data-domain="domain5" value="5-4. 「慶應」を知る" class="area-checkbox form-checkbox h-4 w-4 text-amber-600 rounded">
+                            <span>5-4. 慶應義塾の伝統とDNA</span>
                         </label>
                     </div>
                 </div>
@@ -429,7 +458,7 @@
                         <div class="flex-grow">
                             <label class="block text-xs font-black text-keio-blue uppercase tracking-wider mb-1">⚡ 出題モードの選択</label>
                             <p id="mode-help-text" class="text-[10px] text-gray-500 font-medium">
-                                ※ データベースに収録されている厳選された238問から、選んだカテゴリに沿ってランダムに出題します。
+                                ※ データベースに収録されている厳選された324問から、選んだカテゴリに沿ってランダムに出題します。
                             </p>
                         </div>
                         <div class="grid grid-cols-2 gap-2 w-full md:w-auto">
@@ -724,12 +753,27 @@
           },
           {
             "domain": "D4. 経済・公民と言葉の背景",
-            "category": "4-4. 日本の言葉と慶應義塾のDNA",
-            "question": "福澤諭吉が残した有名な言葉『まず獣身を成して、のちに人心を養う』の「獣身を成す」とは、どのような意味ですか。",
+            "category": "4-4. 日本の言葉と伝統文化",
+            "question": "日本のことわざです。「毎日少しずつでもサボらずに努力を積み重ねていけば、いつかは山のように巨大な素晴らしい成果になる」という意味の有名な言葉はどれですか。",
+            "options": [
+              "捕らぬタヌキの皮算用",
+              "塵も積もれば山となる",
+              "急がば回れ",
+              "弘法にも筆の誤り"
+            ],
+            "answerIndex": 1,
+            "hint": "非常に小さな「ホコリ（塵）」であっても、たくさん集まれば巨大な「マウンテン」になるという意味です。",
+            "rationale": "「塵も積もれば山となる」が正解です。小さなことでもコツコツ続けることの大切さを説く、中学受験対策にも日々のご勉強にも絶対に外せない基本のことわざです。",
+            "parentTalk": "「里香ちゃんが毎日コツコツ続けていて、山のように大きくなった努力って何かあるかな？」とお父さんと話してみよう！"
+          },
+          {
+            "domain": "D5. 福沢諭吉と慶應義塾のDNA",
+            "category": "5-2. 諭吉の著作",
+            "question": "福澤諭吉先生が残した教育思想『まず獣身を成して、のちに人心を養う』の「獣身を成す」とは、どのような意味ですか。",
             "options": [
               "動物のように冷徹な心を持って行動すること。",
               "勉強よりもまず、体を丈夫に健康に育てること。",
-              "社会の理不尽に対して、力で打ち勝つこと。",
+              "社会の理不尽に対して, 力で打ち勝つこと。",
               "自然の中で生き抜くサバイバル技術を身につけること。"
             ],
             "answerIndex": 1,
@@ -1521,7 +1565,8 @@
                 "D1. 伝承と季節のライフサイクル",
                 "D2. 食卓のサイエンスと教養",
                 "D3. 現代社会インフラと安全",
-                "D4. 経済・公民と言葉の背景"
+                "D4. 経済・公民と言葉の背景",
+                "D5. 福沢諭吉と慶應義塾のDNA"
             ];
 
             allDomains.forEach(domainName => {
@@ -1530,8 +1575,13 @@
                     const rate = Math.round((stats.correct / stats.total) * 100);
                     
                     let barColor = "bg-keio-blue";
-                    if (rate < 50) barColor = "bg-keio-red";
-                    else if (rate < 80) barColor = "bg-yellow-500";
+                    if (domainName.startsWith("D5")) {
+                        barColor = "bg-keio-gold";
+                    } else if (rate < 50) {
+                        barColor = "bg-keio-red";
+                    } else if (rate < 80) {
+                        barColor = "bg-yellow-500";
+                    }
 
                     const card = document.createElement('div');
                     card.className = "space-y-1.5";
