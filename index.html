@@ -218,9 +218,28 @@
             }
         }
 
-        /* Tailwind v2 CDNでのemeraldカラー欠落対策 */
+        /* Tailwind v2 CDNでのカラー欠落対策 (emerald, amber, teal) */
         .bg-emerald-500 { background-color: #10b981 !important; }
         .border-emerald-600 { border-color: #059669 !important; }
+        
+        /* D5 (Amber) */
+        .from-amber-50 { --tw-gradient-from: #fffbeb !important; --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to, rgba(255, 255, 255, 0)) !important; }
+        .border-amber-200 { border-color: #fde68a !important; }
+        .text-amber-800 { color: #92400e !important; }
+        .text-amber-600 { color: #d97706 !important; }
+        .bg-amber-600 { background-color: #d97706 !important; }
+        .hover\:border-amber-200:hover { border-color: #fde68a !important; }
+
+        /* D6 (Teal) */
+        .bg-teal-50 { background-color: #f0fdfa !important; }
+        .border-teal-200 { border-color: #99f6e4 !important; }
+        .text-teal-800 { color: #115e59 !important; }
+        .text-teal-600 { color: #0d9488 !important; }
+        .bg-teal-600 { background-color: #0d9488 !important; }
+        .bg-teal-500 { background-color: #14b8a6 !important; }
+        .hover\:border-teal-200:hover { border-color: #99f6e4 !important; }
+
+        .bg-purple-500 { background-color: #a855f7 !important; }
     </style>
 </head>
 <body class="min-h-screen flex flex-col">
@@ -307,18 +326,29 @@
                 <p class="text-gray-500 text-sm mt-1">里香ちゃん、今日対策したいドメインとエリアをボタンで選択しよう！</p>
             </div>
 
+            <!-- 一括選択・解除ボタン -->
+            <div class="flex justify-center space-x-3 mb-6">
+                <button onclick="toggleAllCheckboxes(true)" class="text-xs bg-keio-blue text-white font-bold px-4 py-2 rounded-lg shadow-sm hover:bg-opacity-90 transition active:scale-95 focus:outline-none">
+                    全領域を選択
+                </button>
+                <button onclick="toggleAllCheckboxes(false)" class="text-xs bg-gray-200 text-gray-700 font-bold px-4 py-2 rounded-lg shadow-sm hover:bg-gray-300 transition active:scale-95 focus:outline-none">
+                    全領域を解除
+                </button>
+            </div>
+
             <!-- ドメイン選択（大分類） -->
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
                 <!-- Domain 1 -->
                 <div class="border rounded-xl p-4 bg-blue-50 border-blue-200 shadow-sm">
                     <div class="flex items-center justify-between mb-2">
-                        <h3 class="font-bold text-keio-blue flex items-center">
+                        <h3 onclick="toggleAccordion('acc-dom-1', 'arrow-dom-1')" class="font-bold text-keio-blue flex items-center cursor-pointer select-none">
                             <span class="w-2 h-2 rounded-full bg-keio-blue mr-2"></span>
                             D1. 伝承と季節のライフサイクル
+                            <span class="ml-1.5 text-[10px] inline-block transition-transform duration-200" id="arrow-dom-1" style="transform-origin: center;">▼</span>
                         </h3>
-                        <button onclick="toggleDomain('domain1')" id="btn-dom-1" class="text-xs bg-white border px-2 py-1 rounded shadow-sm hover:bg-gray-50 transition active:scale-95 focus:outline-none">selectALL</button>
+                        <button onclick="toggleDomain('domain1'); event.stopPropagation();" id="btn-dom-1" class="text-xs bg-white border px-2 py-1 rounded shadow-sm hover:bg-gray-50 transition active:scale-95 focus:outline-none">selectALL</button>
                     </div>
-                    <div class="grid grid-cols-1 gap-2 text-sm">
+                    <div id="acc-dom-1" class="hidden grid grid-cols-1 gap-2 text-sm mt-3 pt-2 border-t border-blue-100">
                         <label class="flex items-center space-x-2 p-2 bg-white rounded cursor-pointer hover:bg-gray-50 transition border hover:border-blue-200">
                             <input type="checkbox" checked data-domain="domain1" value="1-1. 天体・自然と暦のシステム" class="area-checkbox form-checkbox h-4 w-4 text-keio-blue rounded">
                             <span>1-1. 天体・自然と暦</span>
@@ -345,13 +375,14 @@
                 <!-- Domain 2 -->
                 <div class="border rounded-xl p-4 bg-green-50 border-green-200 shadow-sm">
                     <div class="flex items-center justify-between mb-2">
-                        <h3 class="font-bold text-green-800 flex items-center">
+                        <h3 onclick="toggleAccordion('acc-dom-2', 'arrow-dom-2')" class="font-bold text-green-800 flex items-center cursor-pointer select-none">
                             <span class="w-2 h-2 rounded-full bg-green-600 mr-2"></span>
                             D2. 食卓のサイエンスと教養
+                            <span class="ml-1.5 text-[10px] inline-block transition-transform duration-200" id="arrow-dom-2" style="transform-origin: center;">▼</span>
                         </h3>
-                        <button onclick="toggleDomain('domain2')" id="btn-dom-2" class="text-xs bg-white border px-2 py-1 rounded shadow-sm hover:bg-gray-50 transition active:scale-95 focus:outline-none">selectALL</button>
+                        <button onclick="toggleDomain('domain2'); event.stopPropagation();" id="btn-dom-2" class="text-xs bg-white border px-2 py-1 rounded shadow-sm hover:bg-gray-50 transition active:scale-95 focus:outline-none">selectALL</button>
                     </div>
-                    <div class="grid grid-cols-1 gap-2 text-sm">
+                    <div id="acc-dom-2" class="hidden grid grid-cols-1 gap-2 text-sm mt-3 pt-2 border-t border-green-100">
                         <label class="flex items-center space-x-2 p-2 bg-white rounded cursor-pointer hover:bg-gray-50 transition border hover:border-green-250">
                             <input type="checkbox" checked data-domain="domain2" value="2-1. 和食の伝統と発酵の科学" class="area-checkbox form-checkbox h-4 w-4 text-green-600 rounded">
                             <span>2-1. 和食の伝統と発酵科学</span>
@@ -370,13 +401,14 @@
                 <!-- Domain 3 -->
                 <div class="border rounded-xl p-4 bg-yellow-50 border-yellow-200 shadow-sm">
                     <div class="flex items-center justify-between mb-2">
-                        <h3 class="font-bold text-yellow-800 flex items-center">
+                        <h3 onclick="toggleAccordion('acc-dom-3', 'arrow-dom-3')" class="font-bold text-yellow-800 flex items-center cursor-pointer select-none">
                             <span class="w-2 h-2 rounded-full bg-yellow-600 mr-2"></span>
                             D3. 現代社会インフラと安全
+                            <span class="ml-1.5 text-[10px] inline-block transition-transform duration-200" id="arrow-dom-3" style="transform-origin: center;">▼</span>
                         </h3>
-                        <button onclick="toggleDomain('domain3')" id="btn-dom-3" class="text-xs bg-white border px-2 py-1 rounded shadow-sm hover:bg-gray-50 transition active:scale-95 focus:outline-none">selectALL</button>
+                        <button onclick="toggleDomain('domain3'); event.stopPropagation();" id="btn-dom-3" class="text-xs bg-white border px-2 py-1 rounded shadow-sm hover:bg-gray-50 transition active:scale-95 focus:outline-none">selectALL</button>
                     </div>
-                    <div class="grid grid-cols-1 gap-2 text-sm">
+                    <div id="acc-dom-3" class="hidden grid grid-cols-1 gap-2 text-sm mt-3 pt-2 border-t border-yellow-100">
                         <label class="flex items-center space-x-2 p-2 bg-white rounded cursor-pointer hover:bg-gray-50 transition border hover:border-yellow-250">
                             <input type="checkbox" checked data-domain="domain3" value="3-1. 公共インフラと通信・交通" class="area-checkbox form-checkbox h-4 w-4 text-yellow-600 rounded">
                             <span>3-1. 公共インフラと交通・通信</span>
@@ -395,13 +427,14 @@
                 <!-- Domain 4 -->
                 <div class="border rounded-xl p-4 bg-red-50 border-red-200 shadow-sm">
                     <div class="flex items-center justify-between mb-2">
-                        <h3 class="font-bold text-keio-red flex items-center">
+                        <h3 onclick="toggleAccordion('acc-dom-4', 'arrow-dom-4')" class="font-bold text-keio-red flex items-center cursor-pointer select-none">
                             <span class="w-2 h-2 rounded-full bg-keio-red mr-2"></span>
                             D4. 経済・公民と言葉の背景
+                            <span class="ml-1.5 text-[10px] inline-block transition-transform duration-200" id="arrow-dom-4" style="transform-origin: center;">▼</span>
                         </h3>
-                        <button onclick="toggleDomain('domain4')" id="btn-dom-4" class="text-xs bg-white border px-2 py-1 rounded shadow-sm hover:bg-gray-50 transition active:scale-95 focus:outline-none">selectALL</button>
+                        <button onclick="toggleDomain('domain4'); event.stopPropagation();" id="btn-dom-4" class="text-xs bg-white border px-2 py-1 rounded shadow-sm hover:bg-gray-50 transition active:scale-95 focus:outline-none">selectALL</button>
                     </div>
-                    <div class="grid grid-cols-1 gap-2 text-sm">
+                    <div id="acc-dom-4" class="hidden grid grid-cols-1 gap-2 text-sm mt-3 pt-2 border-t border-red-100">
                         <label class="flex items-center space-x-2 p-2 bg-white rounded cursor-pointer hover:bg-gray-50 transition border hover:border-red-200">
                             <input type="checkbox" checked data-domain="domain4" value="4-1. 祝日・記念日の法規と歴史" class="area-checkbox form-checkbox h-4 w-4 text-keio-red rounded">
                             <span>4-1. 祝日の歴史・意味</span>
@@ -424,13 +457,14 @@
                 <!-- Domain 5 (慶應義塾のDNA - プレミアムゴールド) -->
                 <div class="col-span-1 md:col-span-2 border rounded-xl p-4 bg-gradient-to-r from-amber-50 to-red-50 border-amber-200 shadow-sm">
                     <div class="flex items-center justify-between mb-2">
-                        <h3 class="font-bold text-amber-800 flex items-center">
+                        <h3 onclick="toggleAccordion('acc-dom-5', 'arrow-dom-5')" class="font-bold text-amber-800 flex items-center cursor-pointer select-none">
                             <span class="w-2.5 h-2.5 rounded-full bg-amber-600 mr-2 shadow-sm animate-pulse"></span>
                             D5. 福沢諭吉と慶應義塾のDNA
+                            <span class="ml-1.5 text-[10px] inline-block transition-transform duration-200" id="arrow-dom-5" style="transform-origin: center;">▼</span>
                         </h3>
-                        <button onclick="toggleDomain('domain5')" id="btn-dom-5" class="text-xs bg-white border px-2 py-1 rounded shadow-sm hover:bg-gray-50 transition active:scale-95 focus:outline-none">selectALL</button>
+                        <button onclick="toggleDomain('domain5'); event.stopPropagation();" id="btn-dom-5" class="text-xs bg-white border px-2 py-1 rounded shadow-sm hover:bg-gray-50 transition active:scale-95 focus:outline-none">selectALL</button>
                     </div>
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-sm">
+                    <div id="acc-dom-5" class="hidden grid grid-cols-1 sm:grid-cols-2 gap-2 text-sm mt-3 pt-2 border-t border-amber-100">
                         <label class="flex items-center space-x-2 p-2 bg-white rounded cursor-pointer hover:bg-gray-50 transition border hover:border-amber-200">
                             <input type="checkbox" checked data-domain="domain5" value="5-1. 諭吉の生涯" class="area-checkbox form-checkbox h-4 w-4 text-amber-600 rounded">
                             <span>5-1. 福澤諭吉の生涯と旅</span>
@@ -449,6 +483,78 @@
                         </label>
                     </div>
                 </div>
+
+                <!-- Domain 6 (お金と金融 - プレミアムティール) -->
+                <div class="border rounded-xl p-4 bg-teal-50 border-teal-200 shadow-sm">
+                    <div class="flex items-center justify-between mb-2">
+                        <h3 onclick="toggleAccordion('acc-dom-6', 'arrow-dom-6')" class="font-bold text-teal-800 flex items-center cursor-pointer select-none text-sm sm:text-base">
+                            <span class="w-2 h-2 rounded-full bg-teal-600 mr-2"></span>
+                            D6. お金(紙幣・硬貨)とその他金融
+                            <span class="ml-1.5 text-[10px] inline-block transition-transform duration-200" id="arrow-dom-6" style="transform-origin: center;">▼</span>
+                        </h3>
+                        <button onclick="toggleDomain('domain6'); event.stopPropagation();" id="btn-dom-6" class="text-xs bg-white border px-2 py-1 rounded shadow-sm hover:bg-gray-50 transition active:scale-95 focus:outline-none">selectALL</button>
+                    </div>
+                    <div id="acc-dom-6" class="hidden grid grid-cols-1 gap-2 text-sm mt-3 pt-2 border-t border-teal-100">
+                        <label class="flex items-center space-x-2 p-2 bg-white rounded cursor-pointer hover:bg-gray-50 transition border hover:border-teal-200">
+                            <input type="checkbox" checked data-domain="domain6" value="6-1. 通貨の基本・硬貨と最新決済" class="area-checkbox form-checkbox h-4 w-4 text-teal-600 rounded">
+                            <span>6-1. 通貨の基本・硬貨と最新決済</span>
+                        </label>
+                        <label class="flex items-center space-x-2 p-2 bg-white rounded cursor-pointer hover:bg-gray-50 transition border hover:border-teal-200">
+                            <input type="checkbox" checked data-domain="domain6" value="6-2. 日本のお金の歴史" class="area-checkbox form-checkbox h-4 w-4 text-teal-600 rounded">
+                            <span>6-2. 日本のお金の歴史</span>
+                        </label>
+                        <label class="flex items-center space-x-2 p-2 bg-white rounded cursor-pointer hover:bg-gray-50 transition border hover:border-teal-200">
+                            <input type="checkbox" checked data-domain="domain6" value="6-3. 紙幣のデザインと製造の歴史" class="area-checkbox form-checkbox h-4 w-4 text-teal-600 rounded">
+                            <span>6-3. 紙幣のデザインと製造の歴史</span>
+                        </label>
+                        <label class="flex items-center space-x-2 p-2 bg-white rounded cursor-pointer hover:bg-gray-50 transition border hover:border-teal-200">
+                            <input type="checkbox" checked data-domain="domain6" value="6-4. 紙幣の肖像となった人物たち" class="area-checkbox form-checkbox h-4 w-4 text-teal-600 rounded">
+                            <span>6-4. 紙幣の肖像となった偉人たち</span>
+                        </label>
+                        <label class="flex items-center space-x-2 p-2 bg-white rounded cursor-pointer hover:bg-gray-50 transition border hover:border-teal-200">
+                            <input type="checkbox" checked data-domain="domain6" value="6-5. 為替の仕組みとグローバル経済" class="area-checkbox form-checkbox h-4 w-4 text-teal-600 rounded">
+                            <span>6-5. 為替の仕組みとグローバル経済</span>
+                        </label>
+                        <label class="flex items-center space-x-2 p-2 bg-white rounded cursor-pointer hover:bg-gray-50 transition border hover:border-teal-200">
+                            <input type="checkbox" checked data-domain="domain6" value="6-6. その他金融・お金の歴史" class="area-checkbox form-checkbox h-4 w-4 text-teal-600 rounded">
+                            <span>6-6. その他金融・お金の歴史</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Domain 7 (自然災害と感染症 - プレミアムパープル) -->
+                <div class="border rounded-xl p-4 bg-purple-50 border-purple-200 shadow-sm">
+                    <div class="flex items-center justify-between mb-2">
+                        <h3 onclick="toggleAccordion('acc-dom-7', 'arrow-dom-7')" class="font-bold text-purple-800 flex items-center cursor-pointer select-none text-sm sm:text-base">
+                            <span class="w-2 h-2 rounded-full bg-purple-600 mr-2"></span>
+                            D7. 自然災害と感染症の教養
+                            <span class="ml-1.5 text-[10px] inline-block transition-transform duration-200" id="arrow-dom-7" style="transform-origin: center;">▼</span>
+                        </h3>
+                        <button onclick="toggleDomain('domain7'); event.stopPropagation();" id="btn-dom-7" class="text-xs bg-white border px-2 py-1 rounded shadow-sm hover:bg-gray-50 transition active:scale-95 focus:outline-none">selectALL</button>
+                    </div>
+                    <div id="acc-dom-7" class="hidden grid grid-cols-1 gap-2 text-sm mt-3 pt-2 border-t border-purple-100">
+                        <label class="flex items-center space-x-2 p-2 bg-white rounded cursor-pointer hover:bg-gray-50 transition border hover:border-purple-200">
+                            <input type="checkbox" checked data-domain="domain7" value="7-1. 自然災害と防災インフラ" class="area-checkbox form-checkbox h-4 w-4 text-purple-600 rounded">
+                            <span>7-1. 自然災害と防災インフラ</span>
+                        </label>
+                        <label class="flex items-center space-x-2 p-2 bg-white rounded cursor-pointer hover:bg-gray-50 transition border hover:border-purple-200">
+                            <input type="checkbox" checked data-domain="domain7" value="7-2. 地震と津波の歴史" class="area-checkbox form-checkbox h-4 w-4 text-purple-600 rounded">
+                            <span>7-2. 地震と津波の歴史</span>
+                        </label>
+                        <label class="flex items-center space-x-2 p-2 bg-white rounded cursor-pointer hover:bg-gray-50 transition border hover:border-purple-200">
+                            <input type="checkbox" checked data-domain="domain7" value="7-3. 水害・台風・火山" class="area-checkbox form-checkbox h-4 w-4 text-purple-600 rounded">
+                            <span>7-3. 水害・台風・火山</span>
+                        </label>
+                        <label class="flex items-center space-x-2 p-2 bg-white rounded cursor-pointer hover:bg-gray-50 transition border hover:border-purple-200">
+                            <input type="checkbox" checked data-domain="domain7" value="7-4. 感染症と人類の歴史" class="area-checkbox form-checkbox h-4 w-4 text-purple-600 rounded">
+                            <span>7-4. 感染症と人類の歴史</span>
+                        </label>
+                        <label class="flex items-center space-x-2 p-2 bg-white rounded cursor-pointer hover:bg-gray-50 transition border hover:border-purple-200">
+                            <input type="checkbox" checked data-domain="domain7" value="7-5. 医学の歴史と研究者" class="area-checkbox form-checkbox h-4 w-4 text-purple-600 rounded">
+                            <span>7-5. 医学の歴史と研究者</span>
+                        </label>
+                    </div>
+                </div>
             </div>
 
             <!-- 出題モード選択エリア -->
@@ -458,7 +564,7 @@
                         <div class="flex-grow">
                             <label class="block text-xs font-black text-keio-blue uppercase tracking-wider mb-1">⚡ 出題モードの選択</label>
                             <p id="mode-help-text" class="text-[10px] text-gray-500 font-medium">
-                                ※ データベースに収録されている厳選された324問から、選んだカテゴリに沿ってランダムに出題します。
+                                ※ データベースに収録されている厳選された443問から、選んだカテゴリに沿ってランダムに出題します。
                             </p>
                         </div>
                         <div class="grid grid-cols-2 gap-2 w-full md:w-auto">
@@ -780,6 +886,36 @@
             "hint": "福澤先生は、学問を修めるためには何よりもベースとなる「健康な肉体」が必要だと説かれました。",
             "rationale": "『まず獣身を成して、のちに人心を養う』は、何よりも頑健な身体をつくることが第一であり、その健康な身体があってこそ、高い道徳や知性（人心）が育つという慶應義塾の教育思想の基本です。",
             "parentTalk": "「毎日健康で元気に学校に通えることのありがたさや、健康のために気をつけていることについて家族で話してみよう！」"
+          },
+          {
+            "domain": "D6. お金(紙幣・硬貨)とその他金融",
+            "category": "6-4. 紙幣の肖像となった人物たち",
+            "question": "2024年からの新・一万円札の顔となった「渋沢栄一」の経歴として、正しいものはどれですか。",
+            "options": [
+              "幕末に遣欧使節団のリーダーとしてヨーロッパを回り、帰国後に初代内閣総理大臣になった",
+              "1867年にフランスのパリ万国博覧会を視察し、帰国後に第一国立銀行の頭取を務めて多くの企業を育てた",
+              "ドイツで細菌学を学び、破傷風菌の純粋培養に成功して伝染病研究所を設立した",
+              "イギリスへ留学し、帰国後に朝日新聞社の専属作家となって『こころ』などを書いた"
+            ],
+            "answerIndex": 1,
+            "hint": "徳川慶喜（一橋家）に仕え、大蔵省を経て日本の近代企業のシステム（株式会社）を次々と立ち上げた、日本の資本主義の父です。",
+            "rationale": "渋沢栄一は、パリ万博の視察で近代的な経済システムを学び、第一国立銀行（現在のみずほ銀行）などを設立して約500もの企業の育成に尽力しました。",
+            "parentTalk": "「渋沢栄一さんがいなかったら、今の日本の便利な会社や銀行の仕組みはなかったかもしれないんだね。お父さんと一万円札をじっくり見てみよう！」"
+          },
+          {
+            "domain": "D7. 自然災害と感染症の教養",
+            "category": "7-2. 地震と津波の歴史",
+            "question": "日本の防災体制の原点となった「関東大震災（かんとうだいしんさい）」は、西暦何年の9月1日に発生しましたか。",
+            "options": [
+              "1868年（明治元年）",
+              "1995年（平成7年）",
+              "1923年（大正12年）",
+              "1945年（昭和20年）"
+            ],
+            "answerIndex": 2,
+            "hint": "いまから約100年前の「大正時代」の終わりに起きました。",
+            "rationale": "関東大震災は「1923年（大正12年）9月1日」に発生しました。M7.9の巨大地震により、東京や横浜は壊滅的な被害を受けました。",
+            "parentTalk": "「1923年の関東大震災！お父さんのおじいちゃんやおばあちゃんが生まれる少し前のことだね、と家族の歴史と重ねてみよう」"
           }
         ];
 
@@ -809,12 +945,12 @@
                             <span class="text-lg">⚠️</span>
                             <div>
                                 <strong class="font-bold block mb-1">【ご注意】ブラウザのセキュリティ制限（CORS）により、外部問題データベースを直接読み込めませんでした。</strong>
-                                <p class="mb-2">現在、HTML内蔵の厳選デモ問題（4問）での動作となっています。</p>
-                                <p class="font-bold">✨ フルバージョン（全238問以上）でプレイする方法：</p>
+                                <p class="mb-2">現在、HTML内蔵の厳選デモ問題（7問）での動作となっています。</p>
+                                <p class="font-bold">✨ フルバージョン（全443問）でプレイする方法：</p>
                                 <ol class="list-decimal pl-4 mt-1 space-y-1 font-medium">
                                     <li>VS Code等のターミナルで、このフォルダ（<code>keio_quiz_no5</code>）に移動します。</li>
                                     <li>コマンド <code>python3 -m http.server 8000</code> または <code>npx serve</code> を実行します。</li>
-                                    <li>ブラウザで表示されたアドレス（<code>http://localhost:8000</code> 等）にアクセスすると、全238問をロードしたフルバージョンが起動します！</li>
+                                    <li>ブラウザで表示されたアドレス（<code>http://localhost:8000</code> 等）にアクセスすると、全443問をロードしたフルバージョンが起動します！</li>
                                 </ol>
                             </div>
                         </div>
@@ -982,7 +1118,7 @@
             } else {
                 btnOffline.className = "py-2 px-4 rounded-lg border font-bold text-xs bg-keio-blue text-white shadow-sm focus:outline-none transition active:scale-95";
                 btnAI.className = "py-2 px-4 rounded-lg border font-bold text-xs bg-white text-gray-700 hover:bg-gray-50 focus:outline-none transition active:scale-95";
-                helpText.textContent = "📦 データベースに収録されている厳選された238問から、選んだカテゴリに沿ってランダムに出題します（通信不要）。";
+                helpText.textContent = "📦 データベースに収録されている厳選された443問から、選んだカテゴリに沿ってランダムに出題します（通信不要）。";
             }
             
             updateBadgeUI();
@@ -1050,6 +1186,19 @@
             checkboxes.forEach(cb => {
                 cb.checked = domainToggleState[domainKey];
             });
+        }
+
+        // アコーディオンの開閉制御
+        function toggleAccordion(contentId, arrowId) {
+            const content = document.getElementById(contentId);
+            const arrow = document.getElementById(arrowId);
+            if (content.classList.contains('hidden')) {
+                content.classList.remove('hidden');
+                if (arrow) arrow.style.transform = 'rotate(180deg)';
+            } else {
+                content.classList.add('hidden');
+                if (arrow) arrow.style.transform = 'rotate(0deg)';
+            }
         }
 
         // 問題数ボタンの切り替え
@@ -1296,10 +1445,13 @@
 2. 出題対象エリア: 以下のエリアリストの中からのみ作成し、各問題の"category"プロパティに正確に割り当ててください。
    - 対象エリアリスト: ${JSON.stringify(categories)}
 3. 各カテゴリーの対応ドメイン名を"domain"に正確に入れてください。ドメインとカテゴリの対応は以下の通りです。
-   - D1. 伝承と季節のライフサイクル (カテゴリ: 1-1, 1-2, 1-3, 1-4)
+   - D1. 伝承と季節のライフサイクル (カテゴリ: 1-1, 1-2, 1-3, 1-4, 1-5)
    - D2. 食卓のサイエンスと教養 (カテゴリ: 2-1, 2-2, 2-3)
    - D3. 現代社会インフラと安全 (カテゴリ: 3-1, 3-2, 3-3)
    - D4. 経済・公民と言葉の背景 (カテゴリ: 4-1, 4-2, 4-3, 4-4)
+   - D5. 福沢諭吉と慶應義塾のDNA (カテゴリ: 5-1, 5-2, 5-3, 5-4)
+   - D6. お金(紙幣・硬貨)とその他金融 (カテゴリ: 6-1, 6-2, 6-3, 6-4, 6-5, 6-6)
+   - D7. 自然災害と感染症の教養 (カテゴリ: 7-1, 7-2, 7-3, 7-4, 7-5)
 4. "question"（問題文）は小学校6年生が読める漢字（必要に応じてふりがな補助など）を用い、難関中学受験の教養・時事レベルにしてください。
 5. "options"は、ア、イ、ウ、エに該当する4つの文字列の配列です。紛らわしくも論理的に納得のいく高品質な誤答を入れてください。
 6. "answerIndex"は正解のインデックス（0=ア, 1=イ, 2=ウ, 3=エ）です。
@@ -1365,6 +1517,7 @@
 
             return parsed;
         }
+
 
         // ローディングのキャンセル
         function cancelLoading() {
@@ -1566,7 +1719,9 @@
                 "D2. 食卓のサイエンスと教養",
                 "D3. 現代社会インフラと安全",
                 "D4. 経済・公民と言葉の背景",
-                "D5. 福沢諭吉と慶應義塾のDNA"
+                "D5. 福沢諭吉と慶應義塾のDNA",
+                "D6. お金(紙幣・硬貨)とその他金融",
+                "D7. 自然災害と感染症の教養"
             ];
 
             allDomains.forEach(domainName => {
@@ -1577,6 +1732,10 @@
                     let barColor = "bg-keio-blue";
                     if (domainName.startsWith("D5")) {
                         barColor = "bg-keio-gold";
+                    } else if (domainName.startsWith("D6")) {
+                        barColor = "bg-teal-500";
+                    } else if (domainName.startsWith("D7")) {
+                        barColor = "bg-purple-500";
                     } else if (rate < 50) {
                         barColor = "bg-keio-red";
                     } else if (rate < 80) {
@@ -1662,17 +1821,21 @@
 
 【問題作成の仕様】
 1. 作成する問題数: 3問（最新の地政学ニュースや時事ニュース、オリンピック、環境問題、または日本の伝統年中行事の教養をメインにする）
-2. 問題フォーマット: 以下のプロパティを持つオブジェクトのJSON配列
-  - "domain": ドメイン名。以下の4つのうちから選ぶ。
+2. 問題フォーマット: 以下のプロプロパティを持つオブジェクトのJSON配列
+  - "domain": ドメイン名。以下の7つのうちから選ぶ。
     "D1. 伝承と季節のライフサイクル"
     "D2. 食卓のサイエンスと教養"
     "D3. 現代社会インフラと安全"
     "D4. 経済・公民と言葉の背景"
+    "D5. 福沢諭吉と慶應義塾のDNA"
+    "D6. お金(紙幣・硬貨)とその他金融"
+    "D7. 自然災害と感染症の教養"
   - "category": エリア名。以下のいずれかから選び、正確に記述する。
     "1-1. 天体・自然と暦のシステム"
     "1-2. 年中行事と伝統の遊び"
     "1-3. 伝統建築と住まいの科学"
     "1-4. 衣服の歴史とマナー"
+    "1-5. 昔の数の数え方と暦"
     "2-1. 和食の伝統と発酵の科学"
     "2-2. 行事食と郷土料理の背景"
     "2-3. 世界の食文化とグローバル"
@@ -1682,7 +1845,22 @@
     "4-1. 祝日・記念日の法規と歴史"
     "4-2. グローバル社会と生きた経済時事"
     "4-3. 国際連帯と国際スポーツ"
-    "4-4. 日本の言葉と慶應義塾のDNA"
+    "4-4. 日本の言葉と伝統文化"
+    "5-1. 諭吉の生涯"
+    "5-2. 諭吉の著作"
+    "5-3. 諭吉と関連"
+    "5-4. 「慶應」を知る"
+    "6-1. 通貨の基本・硬貨と最新決済"
+    "6-2. 日本のお金の歴史"
+    "6-3. 紙幣のデザインと製造の歴史"
+    "6-4. 紙幣の肖像となった人物たち"
+    "6-5. 為替の仕組みとグローバル経済"
+    "6-6. その他金融・お金の歴史"
+    "7-1. 自然災害と防災インフラ"
+    "7-2. 地震と津波の歴史"
+    "7-3. 水害・台風・火山"
+    "7-4. 感染症と人類の歴史"
+    "7-5. 医学の歴史と研究者"
   - "question": 問題文。小学校6年生が読める漢字（ふりがな補助など）を用い、難関中学受験の教養レベル。
   - "options": 選択肢ア、イ、ウ、エに該当する4つの文字列の配列。紛らわしくも論理的に納得のいく高品質な誤答を入れること。
   - "answerIndex": 正解のインデックス（0=ア, 1=イ, 2=ウ, 3=エ）
@@ -1693,9 +1871,9 @@
 【JSONのサンプル構造】
 [
   {
-    "domain": "D4. 経済・公民と言葉の背景",
-    "category": "4-4. 日本の言葉と慶應義塾のDNA",
-    "question": "福澤諭吉が残した有名な言葉『まず獣身を成して、のちに人心を養う』の「獣身を成す」とは、どのような意味ですか。",
+    "domain": "D5. 福沢諭吉と慶應義塾のDNA",
+    "category": "5-2. 諭吉の著作",
+    "question": "福澤諭吉先生が残した教育思想『まず獣身を成して、のちに人心を養う』の「獣身を成す」とは、どのような意味ですか。",
     "options": [
         "動物のように冷徹な心を持って行動すること。",
         "勉強よりもまず、体を丈夫に健康に育てること。",
@@ -1809,7 +1987,7 @@
         }
 
         function resetDatabase() {
-            if (confirm("これまでの学習成績および【後から追加・自動生成したクイズ問題】をすべて消去し、初期状態にリセットしますか？\n（※外部データベースに収録されている基本の238問は消去されず、引き続きプレイ可能です）\nこの操作は取り消せません。")) {
+            if (confirm("これまでの学習成績および【後から追加・自動生成したクイズ問題】をすべて消去し、初期状態にリセットしますか？\n（※外部データベースに収録されている基本の443問は消去されず、引き続きプレイ可能です）\nこの操作は取り消せません。")) {
                 localStorage.removeItem('keio_quiz_stats');
                 localStorage.setItem('keio_quiz_db', JSON.stringify(defaultQuizDB));
                 totalStats = {
