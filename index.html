@@ -240,6 +240,38 @@
         .hover\:border-teal-200:hover { border-color: #99f6e4 !important; }
 
         .bg-purple-500 { background-color: #a855f7 !important; }
+
+        /* ドメインピルボタン */
+        .domain-pill {
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 700;
+            border: 2px solid #cbd5e0;
+            background: white;
+            color: #4a5568;
+            cursor: pointer;
+            transition: all 0.18s cubic-bezier(0.34, 1.56, 0.64, 1);
+            font-family: 'Outfit', 'Noto Sans JP', sans-serif;
+            letter-spacing: 0.03em;
+        }
+        .domain-pill:active { transform: scale(0.95); }
+        .domain-pill.pill-on {
+            background-color: #002B62;
+            color: white;
+            border-color: #001A3D;
+        }
+        .domain-pill.pill-off {
+            background: white;
+            color: #a0aec0;
+            border-color: #e2e8f0;
+        }
+
+        /* ドメイン詳細カードのグレーアウト */
+        .domain-card-disabled {
+            opacity: 0.38;
+            pointer-events: none;
+        }
     </style>
 </head>
 <body class="min-h-screen flex flex-col">
@@ -316,37 +348,86 @@
     <main class="flex-grow max-w-4xl w-full mx-auto p-4 flex flex-col justify-center">
 
         <!-- ================= トップ画面 ================= -->
-        <section id="screen-setup" class="glass-card rounded-3xl p-6 border-t-8 border-keio-blue shadow-lg">
+        <section id="screen-setup" class="glass-card rounded-3xl p-4 sm:p-6 border-t-8 border-keio-blue shadow-lg">
             <!-- CORS警告バナー（非同期読み込み失敗時にJSで表示） -->
             <div id="cors-warning-banner" class="hidden"></div>
 
-            <div class="text-center mb-6">
-                <span class="text-xs font-bold text-keio-red uppercase tracking-wider bg-red-50 px-3 py-1 rounded-full">領域・エリア選択</span>
-                <h2 class="text-2xl font-black text-gray-800 mt-2">どのような教養に挑戦しますか？</h2>
-                <p class="text-gray-500 text-sm mt-1">里香ちゃん、今日対策したいドメインとエリアをボタンで選択しよう！</p>
+            <!-- ① クイズに挑戦するセクション（上部） -->
+            <div class="mb-2">
+                <div class="text-center mb-4">
+                    <span class="text-xs font-bold text-keio-red uppercase tracking-wider bg-red-50 px-3 py-1 rounded-full">クイズに挑戦する</span>
+                    <h2 class="text-xl sm:text-2xl font-black text-gray-800 mt-2">どのドメインに挑戦する？</h2>
+                    <p class="text-gray-500 text-sm mt-1">里香ちゃん、対策したいドメインをON/OFFで選ぼう！</p>
+                </div>
+
+                <!-- ドメインON/OFFピル -->
+                <div class="mb-4">
+                    <div class="flex justify-between items-center mb-2">
+                        <span class="text-xs font-bold text-gray-500 uppercase tracking-wider">出題ドメイン</span>
+                        <div class="flex space-x-2">
+                            <button onclick="toggleAllDomains(true)" class="text-xs bg-keio-blue text-white font-bold px-3 py-1.5 rounded-lg shadow-sm hover:bg-opacity-90 transition active:scale-95 focus:outline-none">全選択</button>
+                            <button onclick="toggleAllDomains(false)" class="text-xs bg-gray-200 text-gray-700 font-bold px-3 py-1.5 rounded-lg shadow-sm hover:bg-gray-300 transition active:scale-95 focus:outline-none">全解除</button>
+                        </div>
+                    </div>
+                    <div class="flex flex-wrap gap-2">
+                        <button id="pill-domain1" onclick="toggleDomainPill('domain1')" class="domain-pill pill-on">D1</button>
+                        <button id="pill-domain2" onclick="toggleDomainPill('domain2')" class="domain-pill pill-on">D2</button>
+                        <button id="pill-domain3" onclick="toggleDomainPill('domain3')" class="domain-pill pill-on">D3</button>
+                        <button id="pill-domain4" onclick="toggleDomainPill('domain4')" class="domain-pill pill-on">D4</button>
+                        <button id="pill-domain5" onclick="toggleDomainPill('domain5')" class="domain-pill pill-on">D5</button>
+                        <button id="pill-domain6" onclick="toggleDomainPill('domain6')" class="domain-pill pill-on">D6</button>
+                        <button id="pill-domain7" onclick="toggleDomainPill('domain7')" class="domain-pill pill-on">D7</button>
+                    </div>
+                </div>
+
+                <!-- 出題モード選択 -->
+                <div id="play-mode-container" class="mb-4">
+                    <label class="block text-xs font-black text-gray-500 uppercase tracking-wider mb-2">⚡ 出題モード</label>
+                    <div class="grid grid-cols-2 gap-2">
+                        <button id="btn-mode-offline" onclick="setPlayMode('offline')" class="py-2.5 px-2 rounded-xl border font-bold text-xs bg-keio-blue text-white shadow-sm focus:outline-none transition active:scale-95">
+                            📦 データベース
+                        </button>
+                        <button id="btn-mode-ai" onclick="setPlayMode('ai')" class="py-2.5 px-2 rounded-xl border font-bold text-xs bg-white text-gray-700 hover:bg-gray-50 focus:outline-none transition active:scale-95">
+                            ✨ AI生成
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 出題数 -->
+                <div class="mb-5">
+                    <label class="block text-xs font-black text-gray-500 uppercase tracking-wider mb-2">📝 出題数</label>
+                    <div class="grid grid-cols-5 gap-1.5">
+                        <button id="btn-num-5"  onclick="setQuestionNum(5)"  class="py-2 rounded-xl border font-bold text-sm text-center bg-keio-blue text-white shadow-sm focus:outline-none transition active:scale-95">5</button>
+                        <button id="btn-num-10" onclick="setQuestionNum(10)" class="py-2 rounded-xl border font-bold text-sm text-center bg-white text-gray-700 hover:bg-gray-50 focus:outline-none transition active:scale-95">10</button>
+                        <button id="btn-num-15" onclick="setQuestionNum(15)" class="py-2 rounded-xl border font-bold text-sm text-center bg-white text-gray-700 hover:bg-gray-50 focus:outline-none transition active:scale-95">15</button>
+                        <button id="btn-num-20" onclick="setQuestionNum(20)" class="py-2 rounded-xl border font-bold text-sm text-center bg-white text-gray-700 hover:bg-gray-50 focus:outline-none transition active:scale-95">20</button>
+                        <button id="btn-num-25" onclick="setQuestionNum(25)" class="py-2 rounded-xl border font-bold text-sm text-center bg-white text-gray-700 hover:bg-gray-50 focus:outline-none transition active:scale-95">25</button>
+                    </div>
+                </div>
+
+                <!-- スタートボタン -->
+                <button onclick="startQuiz()" class="w-full btn-keio-primary text-lg font-bold py-4 px-6 rounded-xl shadow-lg flex items-center justify-center space-x-2 focus:outline-none">
+                    <span>⚡ クイズを開始する！</span>
+                </button>
             </div>
 
-            <!-- 一括選択・解除ボタン -->
-            <div class="flex justify-center space-x-3 mb-6">
-                <button onclick="toggleAllCheckboxes(true)" class="text-xs bg-keio-blue text-white font-bold px-4 py-2 rounded-lg shadow-sm hover:bg-opacity-90 transition active:scale-95 focus:outline-none">
-                    全領域を選択
-                </button>
-                <button onclick="toggleAllCheckboxes(false)" class="text-xs bg-gray-200 text-gray-700 font-bold px-4 py-2 rounded-lg shadow-sm hover:bg-gray-300 transition active:scale-95 focus:outline-none">
-                    全領域を解除
-                </button>
-            </div>
+            <!-- ② 出題エリアの詳細設定（下部） -->
+            <div class="border-t pt-5 mt-6">
+                <div class="text-center mb-4">
+                    <span class="text-xs font-bold text-keio-blue uppercase tracking-wider bg-blue-50 px-3 py-1 rounded-full">出題エリアの詳細設定</span>
+                    <p class="text-gray-500 text-xs mt-2">チェックで出題する細かい単元を個別に選べます</p>
+                </div>
 
             <!-- ドメイン選択（大分類） -->
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
                 <!-- Domain 1 -->
-                <div class="border rounded-xl p-4 bg-blue-50 border-blue-200 shadow-sm">
+                <div id="domain-detail-domain1" class="border rounded-xl p-4 bg-blue-50 border-blue-200 shadow-sm">
                     <div class="flex items-center justify-between mb-2">
                         <h3 onclick="toggleAccordion('acc-dom-1', 'arrow-dom-1')" class="font-bold text-keio-blue flex items-center cursor-pointer select-none">
                             <span class="w-2 h-2 rounded-full bg-keio-blue mr-2"></span>
                             D1. 伝承と季節のライフサイクル
                             <span class="ml-1.5 text-[10px] inline-block transition-transform duration-200" id="arrow-dom-1" style="transform-origin: center;">▼</span>
                         </h3>
-                        <button onclick="toggleDomain('domain1'); event.stopPropagation();" id="btn-dom-1" class="text-xs bg-white border px-2 py-1 rounded shadow-sm hover:bg-gray-50 transition active:scale-95 focus:outline-none">selectALL</button>
                     </div>
                     <div id="acc-dom-1" class="hidden grid grid-cols-1 gap-2 text-sm mt-3 pt-2 border-t border-blue-100">
                         <label class="flex items-center space-x-2 p-2 bg-white rounded cursor-pointer hover:bg-gray-50 transition border hover:border-blue-200">
@@ -373,14 +454,13 @@
                 </div>
 
                 <!-- Domain 2 -->
-                <div class="border rounded-xl p-4 bg-green-50 border-green-200 shadow-sm">
+                <div id="domain-detail-domain2" class="border rounded-xl p-4 bg-green-50 border-green-200 shadow-sm">
                     <div class="flex items-center justify-between mb-2">
                         <h3 onclick="toggleAccordion('acc-dom-2', 'arrow-dom-2')" class="font-bold text-green-800 flex items-center cursor-pointer select-none">
                             <span class="w-2 h-2 rounded-full bg-green-600 mr-2"></span>
                             D2. 食卓のサイエンスと教養
                             <span class="ml-1.5 text-[10px] inline-block transition-transform duration-200" id="arrow-dom-2" style="transform-origin: center;">▼</span>
                         </h3>
-                        <button onclick="toggleDomain('domain2'); event.stopPropagation();" id="btn-dom-2" class="text-xs bg-white border px-2 py-1 rounded shadow-sm hover:bg-gray-50 transition active:scale-95 focus:outline-none">selectALL</button>
                     </div>
                     <div id="acc-dom-2" class="hidden grid grid-cols-1 gap-2 text-sm mt-3 pt-2 border-t border-green-100">
                         <label class="flex items-center space-x-2 p-2 bg-white rounded cursor-pointer hover:bg-gray-50 transition border hover:border-green-250">
@@ -399,14 +479,13 @@
                 </div>
 
                 <!-- Domain 3 -->
-                <div class="border rounded-xl p-4 bg-yellow-50 border-yellow-200 shadow-sm">
+                <div id="domain-detail-domain3" class="border rounded-xl p-4 bg-yellow-50 border-yellow-200 shadow-sm">
                     <div class="flex items-center justify-between mb-2">
                         <h3 onclick="toggleAccordion('acc-dom-3', 'arrow-dom-3')" class="font-bold text-yellow-800 flex items-center cursor-pointer select-none">
                             <span class="w-2 h-2 rounded-full bg-yellow-600 mr-2"></span>
                             D3. 現代社会インフラと安全
                             <span class="ml-1.5 text-[10px] inline-block transition-transform duration-200" id="arrow-dom-3" style="transform-origin: center;">▼</span>
                         </h3>
-                        <button onclick="toggleDomain('domain3'); event.stopPropagation();" id="btn-dom-3" class="text-xs bg-white border px-2 py-1 rounded shadow-sm hover:bg-gray-50 transition active:scale-95 focus:outline-none">selectALL</button>
                     </div>
                     <div id="acc-dom-3" class="hidden grid grid-cols-1 gap-2 text-sm mt-3 pt-2 border-t border-yellow-100">
                         <label class="flex items-center space-x-2 p-2 bg-white rounded cursor-pointer hover:bg-gray-50 transition border hover:border-yellow-250">
@@ -425,14 +504,13 @@
                 </div>
 
                 <!-- Domain 4 -->
-                <div class="border rounded-xl p-4 bg-red-50 border-red-200 shadow-sm">
+                <div id="domain-detail-domain4" class="border rounded-xl p-4 bg-red-50 border-red-200 shadow-sm">
                     <div class="flex items-center justify-between mb-2">
                         <h3 onclick="toggleAccordion('acc-dom-4', 'arrow-dom-4')" class="font-bold text-keio-red flex items-center cursor-pointer select-none">
                             <span class="w-2 h-2 rounded-full bg-keio-red mr-2"></span>
                             D4. 経済・公民と言葉の背景
                             <span class="ml-1.5 text-[10px] inline-block transition-transform duration-200" id="arrow-dom-4" style="transform-origin: center;">▼</span>
                         </h3>
-                        <button onclick="toggleDomain('domain4'); event.stopPropagation();" id="btn-dom-4" class="text-xs bg-white border px-2 py-1 rounded shadow-sm hover:bg-gray-50 transition active:scale-95 focus:outline-none">selectALL</button>
                     </div>
                     <div id="acc-dom-4" class="hidden grid grid-cols-1 gap-2 text-sm mt-3 pt-2 border-t border-red-100">
                         <label class="flex items-center space-x-2 p-2 bg-white rounded cursor-pointer hover:bg-gray-50 transition border hover:border-red-200">
@@ -455,14 +533,13 @@
                 </div>
 
                 <!-- Domain 5 (慶應義塾のDNA - プレミアムゴールド) -->
-                <div class="col-span-1 md:col-span-2 border rounded-xl p-4 bg-gradient-to-r from-amber-50 to-red-50 border-amber-200 shadow-sm">
+                <div id="domain-detail-domain5" class="col-span-1 md:col-span-2 border rounded-xl p-4 bg-gradient-to-r from-amber-50 to-red-50 border-amber-200 shadow-sm">
                     <div class="flex items-center justify-between mb-2">
                         <h3 onclick="toggleAccordion('acc-dom-5', 'arrow-dom-5')" class="font-bold text-amber-800 flex items-center cursor-pointer select-none">
                             <span class="w-2.5 h-2.5 rounded-full bg-amber-600 mr-2 shadow-sm animate-pulse"></span>
                             D5. 福沢諭吉と慶應義塾のDNA
                             <span class="ml-1.5 text-[10px] inline-block transition-transform duration-200" id="arrow-dom-5" style="transform-origin: center;">▼</span>
                         </h3>
-                        <button onclick="toggleDomain('domain5'); event.stopPropagation();" id="btn-dom-5" class="text-xs bg-white border px-2 py-1 rounded shadow-sm hover:bg-gray-50 transition active:scale-95 focus:outline-none">selectALL</button>
                     </div>
                     <div id="acc-dom-5" class="hidden grid grid-cols-1 sm:grid-cols-2 gap-2 text-sm mt-3 pt-2 border-t border-amber-100">
                         <label class="flex items-center space-x-2 p-2 bg-white rounded cursor-pointer hover:bg-gray-50 transition border hover:border-amber-200">
@@ -485,14 +562,13 @@
                 </div>
 
                 <!-- Domain 6 (お金と金融 - プレミアムティール) -->
-                <div class="border rounded-xl p-4 bg-teal-50 border-teal-200 shadow-sm">
+                <div id="domain-detail-domain6" class="border rounded-xl p-4 bg-teal-50 border-teal-200 shadow-sm">
                     <div class="flex items-center justify-between mb-2">
                         <h3 onclick="toggleAccordion('acc-dom-6', 'arrow-dom-6')" class="font-bold text-teal-800 flex items-center cursor-pointer select-none text-sm sm:text-base">
                             <span class="w-2 h-2 rounded-full bg-teal-600 mr-2"></span>
                             D6. お金(紙幣・硬貨)とその他金融
                             <span class="ml-1.5 text-[10px] inline-block transition-transform duration-200" id="arrow-dom-6" style="transform-origin: center;">▼</span>
                         </h3>
-                        <button onclick="toggleDomain('domain6'); event.stopPropagation();" id="btn-dom-6" class="text-xs bg-white border px-2 py-1 rounded shadow-sm hover:bg-gray-50 transition active:scale-95 focus:outline-none">selectALL</button>
                     </div>
                     <div id="acc-dom-6" class="hidden grid grid-cols-1 gap-2 text-sm mt-3 pt-2 border-t border-teal-100">
                         <label class="flex items-center space-x-2 p-2 bg-white rounded cursor-pointer hover:bg-gray-50 transition border hover:border-teal-200">
@@ -523,14 +599,13 @@
                 </div>
 
                 <!-- Domain 7 (自然災害と感染症 - プレミアムパープル) -->
-                <div class="border rounded-xl p-4 bg-purple-50 border-purple-200 shadow-sm">
+                <div id="domain-detail-domain7" class="border rounded-xl p-4 bg-purple-50 border-purple-200 shadow-sm">
                     <div class="flex items-center justify-between mb-2">
                         <h3 onclick="toggleAccordion('acc-dom-7', 'arrow-dom-7')" class="font-bold text-purple-800 flex items-center cursor-pointer select-none text-sm sm:text-base">
                             <span class="w-2 h-2 rounded-full bg-purple-600 mr-2"></span>
                             D7. 自然災害と感染症の教養
                             <span class="ml-1.5 text-[10px] inline-block transition-transform duration-200" id="arrow-dom-7" style="transform-origin: center;">▼</span>
                         </h3>
-                        <button onclick="toggleDomain('domain7'); event.stopPropagation();" id="btn-dom-7" class="text-xs bg-white border px-2 py-1 rounded shadow-sm hover:bg-gray-50 transition active:scale-95 focus:outline-none">selectALL</button>
                     </div>
                     <div id="acc-dom-7" class="hidden grid grid-cols-1 gap-2 text-sm mt-3 pt-2 border-t border-purple-100">
                         <label class="flex items-center space-x-2 p-2 bg-white rounded cursor-pointer hover:bg-gray-50 transition border hover:border-purple-200">
@@ -556,49 +631,7 @@
                     </div>
                 </div>
             </div>
-
-            <!-- 出題モード選択エリア -->
-            <div id="play-mode-container" class="border-t pt-5 mb-5">
-                <div class="bg-blue-50 p-4 rounded-xl border border-blue-200">
-                    <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-                        <div class="flex-grow">
-                            <label class="block text-xs font-black text-keio-blue uppercase tracking-wider mb-1">⚡ 出題モードの選択</label>
-                            <p id="mode-help-text" class="text-[10px] text-gray-500 font-medium">
-                                ※ データベースに収録されている厳選された443問から、選んだカテゴリに沿ってランダムに出題します。
-                            </p>
-                        </div>
-                        <div class="grid grid-cols-2 gap-2 w-full md:w-auto">
-                            <button id="btn-mode-offline" onclick="setPlayMode('offline')" class="py-2 px-4 rounded-lg border font-bold text-xs bg-keio-blue text-white shadow-sm focus:outline-none transition active:scale-95">
-                                📦 データベースから出題
-                            </button>
-                            <button id="btn-mode-ai" onclick="setPlayMode('ai')" class="py-2 px-4 rounded-lg border font-bold text-xs bg-white text-gray-700 hover:bg-gray-50 focus:outline-none transition active:scale-95">
-                                ✨ AIリアルタイム生成
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- アクション・オプションエリア -->
-            <div class="border-t pt-5 flex flex-col md:flex-row justify-between items-center gap-4">
-                <div class="flex items-center space-x-2">
-                    <span class="text-sm font-bold text-gray-700">出題数:</span>
-                    <button id="btn-num-5" onclick="setQuestionNum(5)" class="px-4 py-1.5 rounded-lg border font-bold text-sm bg-keio-blue text-white shadow-sm focus:outline-none transition">5問</button>
-                    <button id="btn-num-10" onclick="setQuestionNum(10)" class="px-4 py-1.5 rounded-lg border font-bold text-sm bg-white text-gray-700 hover:bg-gray-50 focus:outline-none transition">10問</button>
-                    <button id="btn-num-25" onclick="setQuestionNum(25)" class="px-4 py-1.5 rounded-lg border font-bold text-sm bg-white text-gray-700 hover:bg-gray-50 focus:outline-none transition">25問</button>
-                </div>
-                <div class="flex space-x-2 w-full md:w-auto">
-                    <button onclick="toggleAllCheckboxes(true)" class="flex-1 md:flex-initial text-xs bg-gray-200 text-gray-700 font-bold px-3 py-2 rounded-lg hover:bg-gray-300 transition focus:outline-none">全て選択</button>
-                    <button onclick="toggleAllCheckboxes(false)" class="flex-1 md:flex-initial text-xs bg-gray-200 text-gray-700 font-bold px-3 py-2 rounded-lg hover:bg-gray-300 transition focus:outline-none">全解除</button>
-                </div>
-            </div>
-
-            <!-- スタートボタン -->
-            <div class="mt-8">
-                <button onclick="startQuiz()" class="w-full btn-keio-primary text-lg font-bold py-4 px-6 rounded-xl shadow-lg flex items-center justify-center space-x-2 focus:outline-none">
-                    <span>⚡ クイズを開始する！</span>
-                </button>
-            </div>
+            </div><!-- /詳細設定 -->
 
             <!-- AIプロンプトジェネレータ（下部アコーディオン） -->
             <div class="mt-6 border-t pt-4">
@@ -656,21 +689,25 @@
         </section>
 
         <!-- ================= クイズ画面 ================= -->
-        <section id="screen-quiz" class="hidden glass-card rounded-3xl p-6 border-t-8 border-keio-blue relative shadow-lg">
-            <!-- 進捗バー -->
-            <div class="w-full bg-gray-200 bg-opacity-60 h-2.5 rounded-full mb-5 overflow-hidden flex border border-gray-100 shadow-inner">
-                <div id="quiz-progress-bar" class="bg-gradient-to-r from-keio-red to-red-500 h-full transition-all duration-500" style="width: 10%; transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);"></div>
+        <section id="screen-quiz" class="hidden glass-card rounded-3xl p-4 sm:p-6 border-t-8 border-keio-blue relative shadow-lg">
+
+            <!-- 問題進行ステータス -->
+            <div class="flex items-center justify-between mb-3">
+                <div class="flex items-baseline space-x-1">
+                    <span class="text-xs font-bold text-gray-400 uppercase tracking-wider">問題</span>
+                    <span id="quiz-current-num" class="font-black text-keio-blue font-outfit" style="font-size: 2rem; line-height: 1;">1</span>
+                    <span class="text-sm font-bold text-gray-400 font-outfit">/ <span id="quiz-total-num">10</span></span>
+                </div>
+                <button onclick="quitQuiz()" class="text-xs text-gray-400 font-bold hover:text-red-500 transition focus:outline-none px-2 py-1 rounded-lg hover:bg-red-50">
+                    中断する ✕
+                </button>
             </div>
 
-            <!-- ヘッダインフォ -->
-            <div class="flex justify-between items-center text-xs text-gray-500 mb-3 pb-2 border-b">
-                <div>
-                    <span id="quiz-domain" class="font-bold text-keio-blue">ドメイン</span> ＞ 
-                    <span id="quiz-category">エリア</span>
-                </div>
-                <div class="font-bold text-gray-600 font-outfit text-sm">
-                    問題 <span id="quiz-current-num" class="font-black text-keio-blue text-base">1</span> / <span id="quiz-total-num" class="text-base text-gray-400">10</span>
-                </div>
+            <!-- パンくず（ドメイン ＞ エリア） -->
+            <div class="flex items-center space-x-1 text-xs mb-4 pb-3 border-b">
+                <span class="bg-keio-blue text-white font-bold px-2.5 py-0.5 rounded-full text-[11px]" id="quiz-domain">ドメイン</span>
+                <span class="text-gray-400 font-bold">›</span>
+                <span class="text-gray-500 font-medium" id="quiz-category">エリア</span>
             </div>
 
             <!-- 問題文 -->
@@ -701,12 +738,9 @@
             </div>
 
             <!-- アクションコントロール -->
-            <div class="flex justify-between items-center border-t pt-4">
+            <div class="flex justify-start items-center border-t pt-4">
                 <button onclick="showHint()" class="bg-gray-100 text-gray-600 hover:bg-gray-200 font-bold px-4 py-2 rounded-lg text-xs transition focus:outline-none">
                     💡 里香ちゃんヒント
-                </button>
-                <button onclick="quitQuiz()" class="text-xs text-red-500 font-bold hover:underline focus:outline-none">
-                    クイズを中断する
                 </button>
             </div>
 
@@ -979,7 +1013,10 @@
             domain1: true,
             domain2: true,
             domain3: true,
-            domain4: true
+            domain4: true,
+            domain5: true,
+            domain6: true,
+            domain7: true
         };
 
         // ユーザー累計スコアや挑戦回数
@@ -1101,26 +1138,20 @@
         function updatePlayModeUI() {
             const btnOffline = document.getElementById('btn-mode-offline');
             const btnAI = document.getElementById('btn-mode-ai');
-            const helpText = document.getElementById('mode-help-text');
-            
-            if (!btnOffline || !btnAI || !helpText) return;
-            
+
+            if (!btnOffline || !btnAI) return;
+
+            const onCls  = "py-2.5 px-2 rounded-xl border font-bold text-xs bg-keio-blue text-white shadow-sm focus:outline-none transition active:scale-95";
+            const offCls = "py-2.5 px-2 rounded-xl border font-bold text-xs bg-white text-gray-700 hover:bg-gray-50 focus:outline-none transition active:scale-95";
+
             if (settingsPlayMode === 'ai') {
-                btnOffline.className = "py-2 px-4 rounded-lg border font-bold text-xs bg-white text-gray-700 hover:bg-gray-50 focus:outline-none transition active:scale-95";
-                btnAI.className = "py-2 px-4 rounded-lg border font-bold text-xs bg-keio-blue text-white shadow-sm focus:outline-none transition active:scale-95";
-                
-                const hasPersonalKey = !!localStorage.getItem('keio_gemini_api_key');
-                if (hasPersonalKey) {
-                    helpText.textContent = "✨ 個人用のAPIキーを使用して、毎回リアルタイムに完全新規クイズをAI自動生成して出題します！";
-                } else {
-                    helpText.textContent = "✨ デフォルトAPIキー（パパ認証）を使用し、毎回リアルタイムにクイズをAI自動生成して出題します！";
-                }
+                btnOffline.className = offCls;
+                btnAI.className = onCls;
             } else {
-                btnOffline.className = "py-2 px-4 rounded-lg border font-bold text-xs bg-keio-blue text-white shadow-sm focus:outline-none transition active:scale-95";
-                btnAI.className = "py-2 px-4 rounded-lg border font-bold text-xs bg-white text-gray-700 hover:bg-gray-50 focus:outline-none transition active:scale-95";
-                helpText.textContent = "📦 データベースに収録されている厳選された443問から、選んだカテゴリに沿ってランダムに出題します（通信不要）。";
+                btnOffline.className = onCls;
+                btnAI.className = offCls;
             }
-            
+
             updateBadgeUI();
         }
 
@@ -1171,21 +1202,65 @@
 
         // --- セットアップ画面の制御 ---
 
-        // 全選択・全解除
-        function toggleAllCheckboxes(state) {
-            const checkboxes = document.querySelectorAll('.area-checkbox');
-            checkboxes.forEach(cb => cb.checked = state);
-            // トグル状態も更新
-            Object.keys(domainToggleState).forEach(key => domainToggleState[key] = state);
+        // ドメインピルのON/OFF切替（上部ボタン）
+        function toggleDomainPill(domainKey) {
+            domainToggleState[domainKey] = !domainToggleState[domainKey];
+            updateDomainPillUI(domainKey);
+            updateDomainDetailCard(domainKey);
+            // 詳細チェックボックスも連動
+            const checkboxes = document.querySelectorAll(`.area-checkbox[data-domain="${domainKey}"]`);
+            checkboxes.forEach(cb => cb.checked = domainToggleState[domainKey]);
         }
 
-        // ドメイン単位で一括選択・解除
+        // ドメインピルのUI更新
+        function updateDomainPillUI(domainKey) {
+            const pill = document.getElementById('pill-' + domainKey);
+            if (!pill) return;
+            if (domainToggleState[domainKey]) {
+                pill.classList.remove('pill-off');
+                pill.classList.add('pill-on');
+            } else {
+                pill.classList.remove('pill-on');
+                pill.classList.add('pill-off');
+            }
+        }
+
+        // 詳細カードのグレーアウト更新
+        function updateDomainDetailCard(domainKey) {
+            const card = document.getElementById('domain-detail-' + domainKey);
+            if (!card) return;
+            if (domainToggleState[domainKey]) {
+                card.classList.remove('domain-card-disabled');
+            } else {
+                card.classList.add('domain-card-disabled');
+            }
+        }
+
+        // 全ドメインの一括選択・解除（上部ピル用）
+        function toggleAllDomains(state) {
+            Object.keys(domainToggleState).forEach(key => {
+                domainToggleState[key] = state;
+                updateDomainPillUI(key);
+                updateDomainDetailCard(key);
+            });
+            const checkboxes = document.querySelectorAll('.area-checkbox');
+            checkboxes.forEach(cb => cb.checked = state);
+        }
+
+        // 全選択・全解除（後方互換用、旧ボタンから呼ばれる場合）
+        function toggleAllCheckboxes(state) {
+            toggleAllDomains(state);
+        }
+
+        // ドメイン単位で一括選択・解除（詳細カード内selectALLボタン用）
         function toggleDomain(domainKey) {
             domainToggleState[domainKey] = !domainToggleState[domainKey];
             const checkboxes = document.querySelectorAll(`.area-checkbox[data-domain="${domainKey}"]`);
             checkboxes.forEach(cb => {
                 cb.checked = domainToggleState[domainKey];
             });
+            updateDomainPillUI(domainKey);
+            updateDomainDetailCard(domainKey);
         }
 
         // アコーディオンの開閉制御
@@ -1204,17 +1279,12 @@
         // 問題数ボタンの切り替え
         function setQuestionNum(num) {
             settingsQuestionNum = num;
-            document.getElementById('btn-num-5').className = "px-4 py-1.5 rounded-lg border font-bold text-sm bg-white text-gray-700 hover:bg-gray-50 focus:outline-none transition";
-            document.getElementById('btn-num-10').className = "px-4 py-1.5 rounded-lg border font-bold text-sm bg-white text-gray-700 hover:bg-gray-50 focus:outline-none transition";
-            document.getElementById('btn-num-25').className = "px-4 py-1.5 rounded-lg border font-bold text-sm bg-white text-gray-700 hover:bg-gray-50 focus:outline-none transition";
-
-            if (num === 5) {
-                document.getElementById('btn-num-5').className = "px-4 py-1.5 rounded-lg border font-bold text-sm bg-keio-blue text-white shadow-sm focus:outline-none transition";
-            } else if (num === 10) {
-                document.getElementById('btn-num-10').className = "px-4 py-1.5 rounded-lg border font-bold text-sm bg-keio-blue text-white shadow-sm focus:outline-none transition";
-            } else if (num === 25) {
-                document.getElementById('btn-num-25').className = "px-4 py-1.5 rounded-lg border font-bold text-sm bg-keio-blue text-white shadow-sm focus:outline-none transition";
-            }
+            const off = "py-2 rounded-xl border font-bold text-sm text-center bg-white text-gray-700 hover:bg-gray-50 focus:outline-none transition active:scale-95";
+            const on  = "py-2 rounded-xl border font-bold text-sm text-center bg-keio-blue text-white shadow-sm focus:outline-none transition active:scale-95";
+            [5, 10, 15, 20, 25].forEach(n => {
+                const btn = document.getElementById('btn-num-' + n);
+                if (btn) btn.className = (n === num) ? on : off;
+            });
         }
 
         // AIジェネレータ開閉
