@@ -704,10 +704,10 @@
             </div>
 
             <!-- パンくず（ドメイン ＞ エリア） -->
-            <div class="flex items-center space-x-1 text-xs mb-4 pb-3 border-b">
-                <span class="bg-keio-blue text-white font-bold px-2.5 py-0.5 rounded-full text-[11px]" id="quiz-domain">ドメイン</span>
+            <div class="flex items-center space-x-1.5 text-xs mb-4 pb-3 border-b">
+                <span class="bg-keio-blue text-white font-bold px-2.5 py-0.5 rounded-full text-[11px] shrink-0 font-outfit" id="quiz-domain">D1</span>
                 <span class="text-gray-400 font-bold">›</span>
-                <span class="text-gray-500 font-medium" id="quiz-category">エリア</span>
+                <span class="text-gray-600 font-medium" id="quiz-category">エリア</span>
             </div>
 
             <!-- 問題文 -->
@@ -1604,13 +1604,13 @@
         function loadQuestion() {
             const currentQ = activeQuizList[currentQuestionIndex];
             
-            // 進捗バーとインフォ
-            const progressPercent = (currentQuestionIndex / activeQuizList.length) * 100;
-            document.getElementById('quiz-progress-bar').style.width = `${progressPercent}%`;
+            // 進捗インフォ
             document.getElementById('quiz-current-num').innerText = currentQuestionIndex + 1;
             document.getElementById('quiz-total-num').innerText = activeQuizList.length;
 
-            document.getElementById('quiz-domain').innerText = currentQ.domain;
+            // ドメインはD番号のみ抽出（例: "D2. 食卓のサイエンスと教養" → "D2"）
+            const domainShort = currentQ.domain.match(/^(D\d+)/i)?.[1] || currentQ.domain;
+            document.getElementById('quiz-domain').innerText = domainShort;
             document.getElementById('quiz-category').innerText = currentQ.category.replace(/^\d+-\d+\.\s*/, '');
             document.getElementById('quiz-question').innerText = currentQ.question;
 
